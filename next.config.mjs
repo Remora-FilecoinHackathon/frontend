@@ -5,12 +5,10 @@ buildDynamics();
 const basePath = process.env.BASE_PATH || '';
 
 const CHAINS = {
-	Wallaby: 31415,
   Hyperspace: 3141,
-}
+};
 
 const apiProviderUrls = {
-  [CHAINS.Wallaby]: process.env[`API_PROVIDER_URL_${CHAINS.Wallaby}`],
   [CHAINS.Hyperspace]: process.env[`API_PROVIDER_URL_${CHAINS.Hyperspace}`],
 };
 
