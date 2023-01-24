@@ -33,7 +33,7 @@ import FormatToken from 'components/formatToken';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
 
-const STAKING_RATIO = 2.0;
+const STAKING_RATIO = 1.0;
 
 const DecoratorLabelStyle = styled.span`
   display: inline-block;
