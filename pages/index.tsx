@@ -1,21 +1,39 @@
-import { FormEventHandler, FormEvent, FC, ChangeEventHandler, ChangeEvent, MouseEvent } from 'react';
+import {
+  FormEventHandler,
+  FormEvent,
+  FC,
+  ChangeEventHandler,
+  ChangeEvent,
+  MouseEvent,
+} from 'react';
 import Layout from 'components/layout';
 import StackedBlock from 'components/stackedBlock';
-import ConnectionError from 'components/connectionError'
+import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { trackEvent, MatomoEventType } from '@lidofinance/analytics-matomo';
-import { Input, Button, Fil, Clfil, Wallet, InlineLoader } from '../components/ui';
+import {
+  Input,
+  Button,
+  Fil,
+  Clfil,
+  Wallet,
+  InlineLoader,
+} from '../components/ui';
 import { useContractSWR } from 'sdk/hooks/useContractSWR';
-import { useExampleContractRPC, useExampleContractWeb3, useModal } from '../hooks';
+import {
+  useExampleContractRPC,
+  useExampleContractWeb3,
+  useModal,
+} from '../hooks';
 import { useWeb3 } from 'sdk/web3-react';
 import { useFilecoinBalance, useSDK } from 'sdk/hooks';
 import FormatToken from 'components/formatToken';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
 
-const STAKING_RATIO = 1.0;
+const STAKING_RATIO = 2.0;
 
 const DecoratorLabelStyle = styled.span`
   display: inline-block;
@@ -38,18 +56,18 @@ const WalletSectionWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding: 0 30px;
-`
+`;
 
 const WalletBalanceStyles = styled.span`
   display: inline-block;
   margin-left: 10px;
-`
+`;
 
 const WalletWrapperStyles = styled.span`
   margin-right: 20px;
   display: inline-flex;
   align-items: center;
-`
+`;
 
 const WalledBalanceLoaderStyle = styled(InlineLoader)`
   width: 60px;
@@ -64,30 +82,26 @@ export default function Home() {
   const contractRPC = useExampleContractRPC();
   const contractWeb3 = useExampleContractWeb3();
 
-  const {data: clFilBalance, initialClFilLoading} = useContractSWR({
+  const { data: clFilBalance, initialClFilLoading } = useContractSWR({
     contract: contractRPC,
     method: 'getBalance',
-    params: [account]
+    params: [account],
   });
 
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement>
-  ) : void => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setValue(event.currentTarget.value as string);
-  }
+  };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
     event: FormEvent,
   ) => {
     event.preventDefault();
-    contractWeb3.deposit({value: stringToEther(value)})
+    contractWeb3.deposit({ value: stringToEther(value) });
   };
 
-  const handleMaxClick = (
-    event: MouseEvent,
-  ) : void => {
+  const handleMaxClick = (event: MouseEvent): void => {
     balance && setValue(formatBalance(balance));
-  }; 
+  };
 
   const { openModal } = useModal(MODAL.connect);
 
@@ -104,27 +118,37 @@ export default function Home() {
   return (
     <Layout>
       <Head>
-        <title>Collective | Filecoin liquid staking protocol</title>
+        <title>Remora - Uncollateralized Lending</title>
       </Head>
       <StackedBlock>
         <form action="" method="post" onSubmit={handleSubmit}>
-          {active && <WalletSectionWrapper>
-            <WalletWrapperStyles style={{color: '#0086ff'}}>
-              <Wallet />
-               {initialClFilLoading ? <WalledBalanceLoaderStyle /> :
-              (<WalletBalanceStyles>
-                <FormatToken amount={clFilBalance} symbol="clFIL" />
-              </WalletBalanceStyles>)}
-            </WalletWrapperStyles>
-            <WalletWrapperStyles>
-              <Wallet />
-               {initialLoading ? <WalledBalanceLoaderStyle /> :
-              (<WalletBalanceStyles>
-                <FormatToken amount={balance} symbol="FIL" />
-              </WalletBalanceStyles>)}
-            </WalletWrapperStyles>
-            <Button type="button" size="xs" onClick={handleMaxClick}>Max</Button>
-          </WalletSectionWrapper>}
+          {active && (
+            <WalletSectionWrapper>
+              <WalletWrapperStyles style={{ color: '#0086ff' }}>
+                <Wallet />
+                {initialClFilLoading ? (
+                  <WalledBalanceLoaderStyle />
+                ) : (
+                  <WalletBalanceStyles>
+                    <FormatToken amount={clFilBalance} symbol="clFIL" />
+                  </WalletBalanceStyles>
+                )}
+              </WalletWrapperStyles>
+              <WalletWrapperStyles>
+                <Wallet />
+                {initialLoading ? (
+                  <WalledBalanceLoaderStyle />
+                ) : (
+                  <WalletBalanceStyles>
+                    <FormatToken amount={balance} symbol="FIL" />
+                  </WalletBalanceStyles>
+                )}
+              </WalletWrapperStyles>
+              <Button type="button" size="xs" onClick={handleMaxClick}>
+                Max
+              </Button>
+            </WalletSectionWrapper>
+          )}
           <InputWrapper>
             <Input
               id="fil"
@@ -146,7 +170,7 @@ export default function Home() {
               id="clfil"
               fullwidth
               placeholder="0"
-              value = {+value/STAKING_RATIO}
+              value={+value / STAKING_RATIO}
               leftDecorator={
                 <>
                   <Clfil />
@@ -161,12 +185,12 @@ export default function Home() {
           <ButtonWrapper>
             {active ? (
               <Button fullwidth type="submit">
-              Submit
-            </Button>
+                Submit
+              </Button>
             ) : (
-            <Button fullwidth type="button" onClick={openModal}>
-              Connect Wallet
-            </Button>
+              <Button fullwidth type="button" onClick={openModal}>
+                Connect Wallet
+              </Button>
             )}
           </ButtonWrapper>
         </form>
