@@ -16,18 +16,9 @@ const Header: FC = () => (
       <Link href="/">
         <Logo />
       </Link>
-      <Link href="/lend">
-        <Wrap />
-        Lend
-      </Link>
-      <Link href="/borrow">
-        <Wallet />
-        Borrow
-      </Link>
-      <Link href="/active">
-        <Wallet />
-        Current Deals
-      </Link>
+      <Link href="/lend">Lend</Link>
+      <Link href="/borrow">Borrow</Link>
+      <Link href="/active">Current Deals</Link>
     </HeaderLogoStyle>
     <HeaderActionsStyle>
       <HeaderWallet />

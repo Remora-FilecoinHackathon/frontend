@@ -1,8 +1,12 @@
-import { ReactNode } from 'react';
+import { useState } from 'react';
 import { NormalBlockStyles } from './normalBlockStyles';
 
 function NormalBlock(props: any) {
-  return <NormalBlockStyles {...props} />;
+  const [liquidity, setLiquidity] = useState('');
+  const [duration, setDuration] = useState('');
+  const [interestRate, setInterestRate] = useState('');
+
+  return <NormalBlockStyles {...props}></NormalBlockStyles>;
 }
 
 export default NormalBlock;
