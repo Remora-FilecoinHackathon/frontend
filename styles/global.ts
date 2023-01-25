@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
   }
   body {
-    background: ${({ theme }) => theme.colors.background};
+    background: #1D1D1D;
     color: ${({ theme }) => theme.colors.text};
     position: relative;
     box-sizing: border-box;

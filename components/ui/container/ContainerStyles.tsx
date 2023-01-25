@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components'
-import { ContainerSizes } from './types'
+import styled, { css } from 'styled-components';
+import { ContainerSizes } from './types';
 
 const sizes = {
   full: css`
@@ -11,7 +11,7 @@ const sizes = {
   tight: css`
     max-width: 560px;
   `,
-}
+};
 
 export const ContainerStyle = styled.div<{ $size: ContainerSizes }>`
   box-sizing: border-box;
@@ -23,4 +23,4 @@ export const ContainerStyle = styled.div<{ $size: ContainerSizes }>`
     padding: 0 ${({ theme }) => theme.spaceMap.lg}px;
   }
   ${({ $size }) => sizes[$size]}
-`
+`;

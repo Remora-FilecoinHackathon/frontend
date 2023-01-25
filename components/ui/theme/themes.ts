@@ -22,7 +22,7 @@ export const themeLight = {
     secondaryHover: '#212f45',
     secondaryContrast: '#fff',
 
-    background: '#fafafa',
+    background: '#1D1D1D',
     backgroundDarken: '#dae0e5',
 
     foreground: '#fff',
@@ -68,7 +68,7 @@ export const themeDark = {
     secondaryHover: '#fff',
     secondaryContrast: '#273852',
 
-    background: '#1c1c21',
+    background: '#1D1D1D',
     backgroundDarken: '#131317',
 
     foreground: '#34343d',

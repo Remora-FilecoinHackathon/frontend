@@ -159,27 +159,10 @@ export default function Home() {
               leftDecorator={
                 <>
                   <Fil />
-                  <DecoratorLabelStyle>Fil</DecoratorLabelStyle>
+                  <DecoratorLabelStyle>tFil</DecoratorLabelStyle>
                 </>
               }
               label="You stake"
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <Input
-              id="clfil"
-              fullwidth
-              placeholder="0"
-              value={+value / STAKING_RATIO}
-              leftDecorator={
-                <>
-                  <Clfil />
-                  <DecoratorLabelStyle>clFIL</DecoratorLabelStyle>
-                </>
-              }
-              label="You receive"
-              variant="nopadding"
-              readOnly
             />
           </InputWrapper>
           <ButtonWrapper>
