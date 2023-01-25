@@ -8,6 +8,7 @@ import {
 } from 'react';
 import Layout from 'components/layout';
 import StackedBlock from 'components/stackedBlock';
+import NormalBlock from 'components/normalBlock/';
 import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
 import styled from 'styled-components';
@@ -15,11 +16,13 @@ import { useState, useEffect } from 'react';
 import { trackEvent, MatomoEventType } from '@lidofinance/analytics-matomo';
 import {
   Input,
+  InputGroup,
   Button,
   Fil,
   Clfil,
   Wallet,
   InlineLoader,
+  Container,
 } from '../components/ui';
 import { useContractSWR } from 'sdk/hooks/useContractSWR';
 import {
@@ -33,11 +36,9 @@ import FormatToken from 'components/formatToken';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
 
-const STAKING_RATIO = 1.0;
-
 const DecoratorLabelStyle = styled.span`
   display: inline-block;
-  font-size: 30px;
+  font-size: 12px;
   line-height: 39px;
   font-weight: 600;
   margin-left: 15px;
@@ -99,7 +100,10 @@ export default function Home() {
     contractWeb3.deposit({ value: stringToEther(value) });
   };
 
-  const handleMaxClick = (event: MouseEvent): void => {
+  const handleLendClick = (event: MouseEvent): void => {
+    balance && setValue(formatBalance(balance));
+  };
+  const handleBorrowClick = (event: MouseEvent): void => {
     balance && setValue(formatBalance(balance));
   };
 
@@ -124,58 +128,38 @@ export default function Home() {
         <form action="" method="post" onSubmit={handleSubmit}>
           {active && (
             <WalletSectionWrapper>
-              <WalletWrapperStyles style={{ color: '#0086ff' }}>
-                <Wallet />
-                {initialClFilLoading ? (
-                  <WalledBalanceLoaderStyle />
-                ) : (
-                  <WalletBalanceStyles>
-                    <FormatToken amount={clFilBalance} symbol="clFIL" />
-                  </WalletBalanceStyles>
-                )}
-              </WalletWrapperStyles>
               <WalletWrapperStyles>
                 <Wallet />
                 {initialLoading ? (
                   <WalledBalanceLoaderStyle />
                 ) : (
                   <WalletBalanceStyles>
-                    <FormatToken amount={balance} symbol="FIL" />
+                    <FormatToken amount={balance} symbol="tFIL" />
                   </WalletBalanceStyles>
                 )}
               </WalletWrapperStyles>
-              <Button type="button" size="xs" onClick={handleMaxClick}>
-                Max
+              <Button type="button" size="xs" onClick={handleLendClick}>
+                Lend
+              </Button>
+              <Button type="button" size="xs" onClick={handleBorrowClick}>
+                Borrow
               </Button>
             </WalletSectionWrapper>
           )}
           <InputWrapper>
-            <Input
-              id="fil"
-              fullwidth
-              value={value}
-              onChange={handleChange}
-              placeholder="0"
-              leftDecorator={
-                <>
-                  <Fil />
-                  <DecoratorLabelStyle>tFil</DecoratorLabelStyle>
-                </>
-              }
-              label="You stake"
-            />
+            <NormalBlock onClick={openModal}>
+              Available Liquidity (100 fil) ----- Interest Rate ----- (2%)
+              Duration (1yr)
+            </NormalBlock>
+            <NormalBlock onClick={openModal}>
+              Available Liquidity (100 fil) ----- Interest Rate ----- (2%)
+              Duration (1yr)
+            </NormalBlock>
+            <NormalBlock onClick={openModal}>
+              Available Liquidity (100 fil) ----- Interest Rate ----- (2%)
+              Duration (1yr)
+            </NormalBlock>
           </InputWrapper>
-          <ButtonWrapper>
-            {active ? (
-              <Button fullwidth type="submit">
-                Submit
-              </Button>
-            ) : (
-              <Button fullwidth type="button" onClick={openModal}>
-                Connect Wallet
-              </Button>
-            )}
-          </ButtonWrapper>
         </form>
       </StackedBlock>
       <ConnectionError />

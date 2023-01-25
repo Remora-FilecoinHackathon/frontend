@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StackedBlockStyles = styled.div`
-  background-color: #181818;
+  background-color: #373737;
   position: relative;
   padding: 30px 0;
   border-radius: 26px;
@@ -14,7 +14,7 @@ export const StackedBlockStyles = styled.div`
     content: '';
     display: block;
     position: absolute;
-    background-color: #181818;
+    background-color: #373737;
     border: 2px solid #191919;
     border-radius: 30px;
   }
