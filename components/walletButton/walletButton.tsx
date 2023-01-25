@@ -22,7 +22,7 @@ const WalletButton: FC<ButtonProps> = (props) => {
     <WalledButtonStyle
       size="sm"
       variant="text"
-      color="secondary"
+      color="main"
       onClick={openModal}
       {...rest}
     >

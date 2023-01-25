@@ -44,7 +44,7 @@ const DecoratorLabelStyle = styled.span`
   margin-left: 15px;
 `;
 
-const InputWrapper = styled.div`
+const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
 `;
 
@@ -124,44 +124,20 @@ export default function Home() {
       <Head>
         <title>Remora - Uncollateralized Lending</title>
       </Head>
-      <StackedBlock>
-        <form action="" method="post" onSubmit={handleSubmit}>
-          {active && (
-            <WalletSectionWrapper>
-              <WalletWrapperStyles>
-                <Wallet />
-                {initialLoading ? (
-                  <WalledBalanceLoaderStyle />
-                ) : (
-                  <WalletBalanceStyles>
-                    <FormatToken amount={balance} symbol="tFIL" />
-                  </WalletBalanceStyles>
-                )}
-              </WalletWrapperStyles>
-              <Button type="button" size="xs" onClick={handleLendClick}>
-                Lend
-              </Button>
-              <Button type="button" size="xs" onClick={handleBorrowClick}>
-                Borrow
-              </Button>
-            </WalletSectionWrapper>
-          )}
-          <InputWrapper>
-            <NormalBlock onClick={openModal}>
-              Available Liquidity (100 fil) ----- Interest Rate ----- (2%)
-              Duration (1yr)
-            </NormalBlock>
-            <NormalBlock onClick={openModal}>
-              Available Liquidity (100 fil) ----- Interest Rate ----- (2%)
-              Duration (1yr)
-            </NormalBlock>
-            <NormalBlock onClick={openModal}>
-              Available Liquidity (100 fil) ----- Interest Rate ----- (2%)
-              Duration (1yr)
-            </NormalBlock>
-          </InputWrapper>
-        </form>
-      </StackedBlock>
+      <DealWrapper>
+        <NormalBlock onClick={openModal}>
+          Available Liquidity (100 fil) ----- Interest Rate ----- (2%) Duration
+          (1yr)
+        </NormalBlock>
+        <NormalBlock onClick={openModal}>
+          Available Liquidity (100 fil) ----- Interest Rate ----- (2%) Duration
+          (1yr)
+        </NormalBlock>
+        <NormalBlock onClick={openModal}>
+          Available Liquidity (100 fil) ----- Interest Rate ----- (2%) Duration
+          (1yr)
+        </NormalBlock>
+      </DealWrapper>
       <ConnectionError />
     </Layout>
   );

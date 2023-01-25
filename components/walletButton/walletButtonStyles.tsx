@@ -7,7 +7,12 @@ export const WalledButtonStyle = styled(Button)`
   overflow: hidden;
   padding: 5px 5px 5px 20px;
   border-radius: 20px;
-  background-color: #F0F0F0;
+  background: rgb(52, 248, 153);
+  background: linear-gradient(
+    65deg,
+    rgba(52, 248, 153, 1) 0%,
+    rgba(0, 194, 255, 1) 100%
+  );
 `;
 
 export const WalledButtonWrapperStyle = styled.span`

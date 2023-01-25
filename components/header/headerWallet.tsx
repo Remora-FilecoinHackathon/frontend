@@ -17,13 +17,16 @@ const HeaderWallet: FC = () => {
   const testNet = chainId !== CHAINS.FilecoinMainnet;
   const showNet = testNet && active;
 
-  const faucetLink = chainName === "Wallaby" ? "https://wallaby.network/" : "https://hyperspace.yoga/#faucet"
+  const faucetLink =
+    chainName === 'Wallaby'
+      ? 'https://wallaby.network/'
+      : 'https://hyperspace.yoga/#faucet';
 
   return (
     <>
       {showNet && (
         <HeaderWalletChainStyle $color={getChainColor(chainId)}>
-          {/*{chainName} */}
+          {/* {chainName} */}
           <Link href={faucetLink}>Get testnet FIL</Link>
         </HeaderWalletChainStyle>
       )}

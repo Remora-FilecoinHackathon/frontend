@@ -1,18 +1,18 @@
-import styled, { css, keyframes } from 'styled-components'
-import { Theme } from '../theme'
-import { Loader } from '../loaders'
-import { ButtonColors, ButtonSizes, ButtonVariants } from './types'
+import styled, { css, keyframes } from 'styled-components';
+import { Theme } from '../theme';
+import { Loader } from '../loaders';
+import { ButtonColors, ButtonSizes, ButtonVariants } from './types';
 
 type InjectedProps = {
-  $color: ButtonColors
-  $size: ButtonSizes
-  $variant: ButtonVariants
-  $fullwidth: boolean
-  $square: boolean
-  $loading: boolean
-  $active: boolean
-  theme: Theme
-}
+  $color: ButtonColors;
+  $size: ButtonSizes;
+  $variant: ButtonVariants;
+  $fullwidth: boolean;
+  $square: boolean;
+  $loading: boolean;
+  $active: boolean;
+  theme: Theme;
+};
 
 const sizes = {
   xxs: css<InjectedProps>`
@@ -52,29 +52,29 @@ const sizes = {
     padding: ${({ $square }) => ($square ? '24px' : '24px 64px')};
     min-width: ${({ $square }) => ($square ? '0' : '160px')};
   `,
-}
+};
 
 const getMainColor = (props: InjectedProps) => {
   const colorsMap = {
-    primary: `var(--collective-color-primary)`,
+    primary: `var(--primary-color)`,
     secondary: `var(--collective-color-secondary)`,
     warning: `var(--collective-color-warning)`,
     error: `var(--collective-color-error)`,
     success: `var(--collective-color-success)`,
-  }
-  return colorsMap[props.$color]
-}
+  };
+  return colorsMap[props.$color];
+};
 
 const getContrastColor = (props: InjectedProps) => {
   const colorsMap = {
-    primary: `var(--collective-color-primaryContrast)`,
+    primary: `#313131`,
     secondary: `var(--collective-color-secondaryContrast)`,
     warning: `var(--collective-color-warningContrast)`,
     error: `var(--collective-color-errorContrast)`,
     success: `var(--collective-color-successContrast)`,
-  }
-  return colorsMap[props.$color]
-}
+  };
+  return colorsMap[props.$color];
+};
 
 const getHoverColor = (props: InjectedProps) => {
   const colorsMap = {
@@ -83,9 +83,9 @@ const getHoverColor = (props: InjectedProps) => {
     warning: `var(--collective-color-warningHover)`,
     error: `var(--collective-color-errorHover)`,
     success: `var(--collective-color-successHover)`,
-  }
-  return colorsMap[props.$color]
-}
+  };
+  return colorsMap[props.$color];
+};
 
 const variants = {
   filled: css`
@@ -166,7 +166,7 @@ const variants = {
       }
     }
   `,
-}
+};
 
 export const ButtonStyle = styled.button<InjectedProps>`
   box-sizing: border-box;
@@ -204,14 +204,14 @@ export const ButtonStyle = styled.button<InjectedProps>`
 
   ${(props) => sizes[props.$size]}
   ${(props) => variants[props.$variant]}
-`
+`;
 
 export const ripple = keyframes`
   to {
     transform: scale(4);
     opacity: 0;
   }
-`
+`;
 
 export const ButtonRippleStyle = styled.span`
   position: absolute;
@@ -221,13 +221,13 @@ export const ButtonRippleStyle = styled.span`
   animation: ${ripple} 0.8s linear;
   background-color: currentColor;
   opacity: 0.4;
-`
+`;
 
 export const ButtonContentStyle = styled.span<{ $hidden: boolean }>`
   position: relative;
   pointer-events: none;
   visibility: ${({ $hidden }) => ($hidden ? 'hidden' : 'visible')};
-`
+`;
 
 export const ButtonLoaderStyle = styled(Loader)`
   position: absolute;
@@ -236,4 +236,4 @@ export const ButtonLoaderStyle = styled(Loader)`
   transform: translate(-50%, -50%);
   color: currentColor;
   pointer-events: none;
-`
+`;
