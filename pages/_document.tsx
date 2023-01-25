@@ -48,14 +48,14 @@ export default class MyDocument extends Document {
   }
 
   get metaTitle(): string {
-    return 'Collective Filecoin Staking';
+    return 'Remora';
   }
 
   get metaDescription(): string {
     return (
-      'Liquid staking with CollectiveDAO. ' +
-      'Stake FIL with CollectiveDAO to earn daily rewards while keeping full control of your staked tokens. ' +
-      'Start earning rewards in just a few clicks.'
+      'Uncollateralized Lending with Remora. ' +
+      'Borrow or Lend depending on your needs using our app having a selection of available contracts.' +
+      'Become a storage provider or help others while earning rewards.'
     );
   }
 
