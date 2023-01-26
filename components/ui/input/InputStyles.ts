@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components'
-import { InputMessageVariants, InputVariants, InputColors } from './types'
+import styled, { css } from 'styled-components';
+import { InputMessageVariants, InputVariants, InputColors } from './types';
 
 const statesCSS = css`
   &:hover {
@@ -10,7 +10,7 @@ const statesCSS = css`
     z-index: 2;
     border-color: var(--collective-color-borderActive);
   }
-`
+`;
 
 const activeCSS = css`
   &,
@@ -19,7 +19,7 @@ const activeCSS = css`
     z-index: 2;
     border-color: var(--collective-color-borderActive);
   }
-`
+`;
 
 const errorCSS = css`
   &,
@@ -27,7 +27,7 @@ const errorCSS = css`
   &:focus-within {
     border-color: var(--collective-color-error);
   }
-`
+`;
 
 const warningCSS = css`
   &,
@@ -35,19 +35,20 @@ const warningCSS = css`
   &:focus-within {
     border-color: var(--collective-color-warning);
   }
-`
+`;
 
 const wrapperColors = {
-  default: css<{ $disabled: boolean, $readonly: boolean }>`
-    background: var(--collective-color-controlBg);
+  default: css<{ $disabled: boolean; $readonly: boolean }>`
+    background: 'transparent';
     border-color: var(--collective-color-border);
     color: var(--collective-color-text);
 
     ${({ $disabled, $readonly }) =>
       $disabled
         ? `background: var(--collective-color-foreground);`
-        : $readonly ? `background: var(--collective-color-foreground);`:`
-          border-top: 2px solid var(--collective-color-border);
+        : $readonly
+        ? `background: var(--collective-color-foreground);`
+        : `
           &:hover {
             border-color: var(--collective-color-borderHover);
           }
@@ -67,22 +68,22 @@ const wrapperColors = {
           }
     `};
   `,
-}
+};
 
 export const InputWrapperStyle = styled.div<{
-  $error: boolean
-  $warning: boolean
-  $active: boolean
-  $disabled: boolean
-  $fullwidth: boolean
-  $readonly: boolean
-  $color: InputColors
+  $error: boolean;
+  $warning: boolean;
+  $active: boolean;
+  $disabled: boolean;
+  $fullwidth: boolean;
+  $readonly: boolean;
+  $color: InputColors;
 }>`
   position: relative;
   display: inline-flex;
   align-items: stretch;
   box-sizing: border-box;
-  padding: 0 30px;
+  padding: 0 10px;
   cursor: ${({ $disabled }) => ($disabled ? 'default' : 'text')};
   transition: border-color ${({ theme }) => theme.duration.fast} ease;
   width: ${({ $fullwidth }) => ($fullwidth ? '100%' : 'auto')};
@@ -93,7 +94,7 @@ export const InputWrapperStyle = styled.div<{
   ${({ $active }) => ($active ? activeCSS : '')}
   ${({ $warning }) => ($warning ? warningCSS : '')}
   ${({ $error }) => ($error ? errorCSS : '')}
-`
+`;
 
 const contentVariants = {
   default: css`
@@ -102,10 +103,10 @@ const contentVariants = {
   small: css`
     padding: 9px 0;
   `,
-  nopadding: css `
+  nopadding: css`
     padding: 0;
   `,
-}
+};
 
 export const InputContentStyle = styled.span<{ $variant: InputVariants }>`
   font-weight: 400;
@@ -115,7 +116,7 @@ export const InputContentStyle = styled.span<{ $variant: InputVariants }>`
   position: relative;
 
   ${({ $variant }) => contentVariants[$variant]};
-`
+`;
 
 const inputColors = {
   default: css`
@@ -161,16 +162,16 @@ const inputColors = {
       color: var(--collective-color-accentContrast) !important;
     }
   `,
-}
+};
 
 export const InputStyle = styled.input<{
-  $color: InputColors
+  $color: InputColors;
 }>`
   width: 100%;
   font-family: inherit;
   font-weight: 400;
-  font-size: 30px;
-  line-height: 38px;
+  font-size: 28px;
+  line-height: 12px;
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -178,20 +179,20 @@ export const InputStyle = styled.input<{
   border: none;
   outline: none;
   position: relative;
-  text-align: right;
+  text-align: left;
 
   &::placeholder {
     transition: opacity ${({ theme }) => theme.duration.fast} ease;
   }
 
   ${({ $color }) => inputColors[$color]}
-`
+`;
 
 export const TextareaStyle = styled(InputStyle).attrs({
   as: 'textarea',
 })`
   resize: none;
-`
+`;
 
 const messageVariants = {
   error: css`
@@ -209,11 +210,11 @@ const messageVariants = {
   success: css`
     color: var(--collective-color-success);
   `,
-}
+};
 
 export const InputMessageStyle = styled.span<{
-  $variant: InputMessageVariants
-  $bordered?: boolean
+  $variant: InputMessageVariants;
+  $bordered?: boolean;
 }>`
   margin-top: ${({ $bordered }) => ($bordered ? 5 : 6)}px;
   left: ${({ $bordered }) => ($bordered ? -1 : 0)}px;
@@ -231,7 +232,7 @@ export const InputMessageStyle = styled.span<{
   max-width: ${({ $bordered }) => ($bordered ? 'calc(100% + 2px)' : '100%')};
 
   ${({ $variant }) => messageVariants[$variant]}
-`
+`;
 
 const decoratorCSS = css`
   flex-grow: 0;
@@ -239,14 +240,14 @@ const decoratorCSS = css`
   cursor: inherit;
   display: flex;
   align-items: center;
-`
+`;
 
 export const InputLeftDecoratorStyle = styled.span`
   ${decoratorCSS}
   padding-right: 16px;
-`
+`;
 
 export const InputRightDecoratorStyle = styled.span`
   ${decoratorCSS}
   padding-left: 16px;
-`
+`;

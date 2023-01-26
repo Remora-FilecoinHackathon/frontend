@@ -55,30 +55,56 @@ export default function Home() {
   const contractRPC = useExampleContractRPC();
   const contractWeb3 = useExampleContractWeb3();
 
+  const { data: clFilBalance, initialClFilLoading } = useContractSWR({
+    contract: contractRPC,
+    method: 'getBalance',
+    params: [account],
+  });
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setValue(event.currentTarget.value as string);
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
+    event: FormEvent,
+  ) => {
+    event.preventDefault();
+    contractWeb3.deposit({ value: stringToEther(value) });
+  };
+
   const NewContractInput = () => {
     return (
-      <NormalBlock style={{ backgroundColor: '#323232' }}>
-        <div style={{ marginLeft: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
-            <Input>
-              <Fil style={{ marginLeft: '12px' }} />
-            </Input>
+      <>
+        <NormalBlock>
+          <div style={{ marginLeft: '20px' }}>
+            <div
+              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
+            >
+              <Input>
+                <Fil style={{ marginLeft: '12px' }} />
+              </Input>
+            </div>
+            <p>Available Liquidity</p>
           </div>
-          <p>Available Liquidity</p>
-        </div>
-        <div style={{ marginRight: '20px' }}>
-          <div>
-            <Input />
+          <div style={{ marginRight: '20px' }}>
+            <div>
+              <Input />
 
-            <p>Interest Rate</p>
-          </div>
-          <div>
-            <Input />
+              <p>Interest Rate</p>
+            </div>
+            <div>
+              <Input />
 
-            <p>Duration</p>
+              <p>Duration</p>
+            </div>
           </div>
+        </NormalBlock>
+        <div style={{ marginBottom: '40px' }}>
+          <Button fullwidth={true} variant="outlined">
+            Submit
+          </Button>
         </div>
-      </NormalBlock>
+      </>
     );
   };
 
@@ -87,6 +113,13 @@ export default function Home() {
       setRenderNewDiv(true);
     }
   }, [newContract]);
+
+  const handleLendClick = (event: MouseEvent): void => {
+    balance && setValue(formatBalance(balance));
+  };
+  const handleBorrowClick = (event: MouseEvent): void => {
+    balance && setValue(formatBalance(balance));
+  };
 
   const { openModal } = useModal(MODAL.connect);
 
@@ -115,8 +148,12 @@ export default function Home() {
         {!newContract ? (
           <NormalBlock
             style={{
-              backgroundColor: '#323232',
+              background:
+                'linear-gradient(65deg, rgba(52,248,153,0.34217436974789917) 0%, rgba(154,123,200,0.6446953781512605) 30%, rgba(109,237,15,0.15449929971988796) 72%, rgba(0,194,255,0.3617822128851541) 100%)',
               borderColor: '#181818',
+              borderRadius: '25px 25px 0px 0px',
+              marginBottom: '-15px',
+              marginTop: '10px',
             }}
             onClick={() => setNewContract(true)}
           >
