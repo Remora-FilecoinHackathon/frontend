@@ -7,26 +7,13 @@ import {
   MouseEvent,
 } from 'react';
 import Layout from 'components/layout';
-import StackedBlock from 'components/stackedBlock';
 import NormalBlock from 'components/normalBlock/';
 import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { trackEvent, MatomoEventType } from '@lidofinance/analytics-matomo';
-import {
-  Input,
-  InputGroup,
-  Button,
-  Fil,
-  Clfil,
-  Wallet,
-  InlineLoader,
-  Container,
-  Whitepaper,
-  Heading,
-  Text,
-} from '../components/ui';
+import { Input, Fil, Heading, Text } from '../components/ui';
 import { useContractSWR } from 'sdk/hooks/useContractSWR';
 import {
   useExampleContractRPC,
@@ -38,7 +25,6 @@ import { useFilecoinBalance, useSDK } from 'sdk/hooks';
 import FormatToken from 'components/formatToken';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
-import { Logo } from 'components/logo';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -54,50 +40,6 @@ export default function Home() {
 
   const contractRPC = useExampleContractRPC();
   const contractWeb3 = useExampleContractWeb3();
-
-  const { data: clFilBalance, initialClFilLoading } = useContractSWR({
-    contract: contractRPC,
-    method: 'getBalance',
-    params: [account],
-  });
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setValue(event.currentTarget.value as string);
-  };
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
-    event: FormEvent,
-  ) => {
-    event.preventDefault();
-    contractWeb3.deposit({ value: stringToEther(value) });
-  };
-
-  const NewContractInput = () => {
-    return (
-      <NormalBlock style={{ backgroundColor: '#323232' }}>
-        <div style={{ marginLeft: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
-            <Input>
-              <Fil style={{ marginLeft: '12px' }} />
-            </Input>
-          </div>
-          <p>Available Liquidity</p>
-        </div>
-        <div style={{ marginRight: '20px' }}>
-          <div>
-            <Input />
-
-            <p>Interest Rate</p>
-          </div>
-          <div>
-            <Input />
-
-            <p>Duration</p>
-          </div>
-        </div>
-      </NormalBlock>
-    );
-  };
 
   useEffect(() => {
     if (newContract) {
