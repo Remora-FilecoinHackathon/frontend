@@ -6,6 +6,7 @@ export const HeaderStyle = styled(Container)`
   padding-bottom: 18px;
   display: flex;
   align-items: center;
+  margin-top: 10px;
 `;
 
 export const HeaderLogoStyle = styled.div`

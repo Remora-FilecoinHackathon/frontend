@@ -24,7 +24,7 @@ type InjectedProps = {
 
 const getHeadingColor = (props: InjectedProps) => {
   const colorsMap = {
-    text: `var(--collective-color-text)`,
+    text: `white`,
     secondary: `var(--collective-color-textSecondary)`,
   };
   return colorsMap[props.$color];

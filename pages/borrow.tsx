@@ -23,6 +23,9 @@ import {
   Wallet,
   InlineLoader,
   Container,
+  Whitepaper,
+  Heading,
+  Text,
 } from '../components/ui';
 import { useContractSWR } from 'sdk/hooks/useContractSWR';
 import {
@@ -35,46 +38,15 @@ import { useFilecoinBalance, useSDK } from 'sdk/hooks';
 import FormatToken from 'components/formatToken';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
-
-const DecoratorLabelStyle = styled.span`
-  display: inline-block;
-  font-size: 12px;
-  line-height: 39px;
-  font-weight: 600;
-  margin-left: 15px;
-`;
+import { Logo } from 'components/logo';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
 `;
 
-const ButtonWrapper = styled.div`
-  padding: 30px 30px 0 30px;
-`;
-
-const WalletSectionWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 30px;
-`;
-
-const WalletBalanceStyles = styled.span`
-  display: inline-block;
-  margin-left: 10px;
-`;
-
-const WalletWrapperStyles = styled.span`
-  margin-right: 20px;
-  display: inline-flex;
-  align-items: center;
-`;
-
-const WalledBalanceLoaderStyle = styled(InlineLoader)`
-  width: 60px;
-`;
-
-export default function Borrow() {
+export default function Home() {
+  const [newContract, setNewContract] = useState(false);
+  const [renderNewDiv, setRenderNewDiv] = useState(false);
   const [value, setValue] = useState('');
   const { active } = useWeb3();
   const { account } = useSDK();
@@ -100,6 +72,39 @@ export default function Borrow() {
     contractWeb3.deposit({ value: stringToEther(value) });
   };
 
+  const NewContractInput = () => {
+    return (
+      <NormalBlock style={{ backgroundColor: '#323232' }}>
+        <div style={{ marginLeft: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
+            <Input>
+              <Fil style={{ marginLeft: '12px' }} />
+            </Input>
+          </div>
+          <p>Available Liquidity</p>
+        </div>
+        <div style={{ marginRight: '20px' }}>
+          <div>
+            <Input />
+
+            <p>Interest Rate</p>
+          </div>
+          <div>
+            <Input />
+
+            <p>Duration</p>
+          </div>
+        </div>
+      </NormalBlock>
+    );
+  };
+
+  useEffect(() => {
+    if (newContract) {
+      setRenderNewDiv(true);
+    }
+  }, [newContract]);
+
   const handleLendClick = (event: MouseEvent): void => {
     balance && setValue(formatBalance(balance));
   };
@@ -124,18 +129,87 @@ export default function Borrow() {
       <Head>
         <title>Remora - Uncollateralized Lending</title>
       </Head>
+      <div style={{ textAlign: 'center' }}>
+        <Heading size="sm">Borrow Fil</Heading>
+        <Text color="secondary" size="xs">
+          Select a contract to become a Storage Provider.
+        </Text>
+      </div>
       <DealWrapper>
         <NormalBlock onClick={openModal}>
-          Available Liquidity (100 fil) ----- Interest Rate ----- (2%) Duration
-          (1yr)
+          <div style={{ marginLeft: '20px' }}>
+            <div
+              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
+            >
+              <p
+                style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}
+              >
+                25
+              </p>
+              <Fil style={{ marginLeft: '12px' }} />
+            </div>
+            <p>Available Liquidity</p>
+          </div>
+          <div style={{ marginRight: '20px' }}>
+            <div>
+              <p style={{ color: 'var(--secondary-color)' }}>2%</p>
+              <p>Interest Rate</p>
+            </div>
+            <div>
+              <p style={{ color: 'var(--primary-color)' }}>1yr</p>
+              <p>Duration</p>
+            </div>
+          </div>
         </NormalBlock>
         <NormalBlock onClick={openModal}>
-          Available Liquidity (100 fil) ----- Interest Rate ----- (2%) Duration
-          (1yr)
+          <div style={{ marginLeft: '20px' }}>
+            <div
+              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
+            >
+              <p
+                style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}
+              >
+                0.05
+              </p>
+              <Fil style={{ marginLeft: '12px' }} />
+            </div>
+            <p>Available Liquidity</p>
+          </div>
+          <div style={{ marginRight: '20px' }}>
+            <div>
+              <p style={{ color: 'var(--secondary-color)' }}>2%</p>
+              <p>Interest Rate</p>
+            </div>
+            <div>
+              <p style={{ color: 'var(--primary-color)' }}>1yr</p>
+              <p>Duration</p>
+            </div>
+          </div>
         </NormalBlock>
         <NormalBlock onClick={openModal}>
-          Available Liquidity (100 fil) ----- Interest Rate ----- (2%) Duration
-          (1yr)
+          <div style={{ marginLeft: '20px' }}>
+            <div
+              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
+            >
+              <p
+                style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}
+              >
+                10.5
+              </p>
+              <Fil style={{ marginLeft: '12px' }} />
+            </div>
+            <p>Available Liquidity</p>
+          </div>
+          <div style={{ marginRight: '20px' }}>
+            <div>
+              <p style={{ color: 'var(--secondary-color)' }}>2%</p>
+              <p>Interest Rate</p>
+            </div>
+            <div>
+              <p style={{ color: 'var(--primary-color)' }}>1yr</p>
+              <p>Duration</p>
+            </div>
+          </div>
         </NormalBlock>
       </DealWrapper>
       <ConnectionError />

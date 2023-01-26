@@ -27,7 +27,7 @@ const HeaderWallet: FC = () => {
       {showNet && (
         <HeaderWalletChainStyle $color={getChainColor(chainId)}>
           {/* {chainName} */}
-          <Link href={faucetLink}>Get testnet FIL</Link>
+          {/* <Link href={faucetLink}>Get testnet FIL</Link> */}
         </HeaderWalletChainStyle>
       )}
       {active ? <WalletButton /> : <WalletConnect size="sm" />}

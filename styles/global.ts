@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     --primary-color: #34F899;
-    --secondary-color: #00C2FF
+    --secondary-color: #00C2FF;
     --white-color: #E4E4E4;
     background: #1D1D1D;
     color: var(--white-color);
@@ -23,7 +23,8 @@ const GlobalStyle = createGlobalStyle`
     text-size-adjust: none;
   }
   a {
-    color: ${({ theme }) => theme.colors.primary};
+    color: var(--secondary-color);
+    text-decoration: none;
 
     &:hover {
       color: ${({ theme }) => theme.colors.primaryHover};

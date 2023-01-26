@@ -1,13 +1,19 @@
 import styled from 'styled-components';
 
 export const StackedBlockStyles = styled.div`
-  background-color: #373737;
+  display: flex;
+  background-color: #181818;
+  color: #e4e4e4;
   position: relative;
-  padding: 30px 0;
-  border-radius: 26px;
-  border: 2px solid #191919;
+  padding: 20px 0;
+  margin-bottom: 15px;
+  border-radius: 25px;
+  border: 1px solid #353535;
   box-sizing: border-box;
   padding-bottom: 20px;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: flex-end;
 
   &::before,
   &::after {
