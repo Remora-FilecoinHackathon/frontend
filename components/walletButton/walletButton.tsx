@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ButtonProps } from '../ui';
 import AddressBadge from 'components/addressBadge';
+import { ethers } from 'ethers';
 import {
   WalledButtonStyle,
   WalledButtonWrapperStyle,
@@ -13,10 +14,23 @@ import FormatToken from '../formatToken';
 import { MODAL } from 'providers';
 
 const WalletButton: FC<ButtonProps> = (props) => {
+  const [balance, setBalance] = useState('');
   const { onClick, ...rest } = props;
   const { openModal } = useModal(MODAL.wallet);
   const { account } = useSDK();
-  const { data: balance, initialLoading } = useFilecoinBalance();
+
+  async function getBalance(address: string | Promise<string>) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const balance = await provider.getBalance(address);
+    const balanceInEth = ethers.utils.formatEther(balance);
+    setBalance(balanceInEth);
+  }
+
+  useEffect(() => {
+    if (account) {
+      getBalance(account);
+    }
+  }, [account]);
 
   return (
     <WalledButtonStyle
@@ -28,11 +42,7 @@ const WalletButton: FC<ButtonProps> = (props) => {
     >
       <WalledButtonWrapperStyle>
         <WalledButtonBalanceStyle>
-          {initialLoading ? (
-            <WalledButtonLoaderStyle />
-          ) : (
-            <FormatToken amount={balance} symbol="tFIL" />
-          )}
+          <FormatToken amount={balance} symbol="tFIL" />
         </WalledButtonBalanceStyle>
         <AddressBadge address={account} />
       </WalledButtonWrapperStyle>

@@ -80,9 +80,8 @@ export default function Home() {
             <div
               style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
             >
-              <Input>
-                <Fil style={{ marginLeft: '12px' }} />
-              </Input>
+              <Input></Input>
+              <Fil />
             </div>
             <p>Available Liquidity</p>
           </div>

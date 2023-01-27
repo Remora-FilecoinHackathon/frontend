@@ -41,7 +41,7 @@ const wrapperColors = {
   default: css<{ $disabled: boolean; $readonly: boolean }>`
     background: 'transparent';
     border-color: var(--collective-color-border);
-    color: var(--collective-color-text);
+    color: var(--white-color);
 
     ${({ $disabled, $readonly }) =>
       $disabled
@@ -83,7 +83,7 @@ export const InputWrapperStyle = styled.div<{
   display: inline-flex;
   align-items: stretch;
   box-sizing: border-box;
-  padding: 0 10px;
+  padding: 0 30px;
   cursor: ${({ $disabled }) => ($disabled ? 'default' : 'text')};
   transition: border-color ${({ theme }) => theme.duration.fast} ease;
   width: ${({ $fullwidth }) => ($fullwidth ? '100%' : 'auto')};
@@ -113,6 +113,7 @@ export const InputContentStyle = styled.span<{ $variant: InputVariants }>`
   font-size: ${({ theme }) => theme.fontSizesMap.xs}px;
   display: flex;
   flex-grow: 1;
+
   position: relative;
 
   ${({ $variant }) => contentVariants[$variant]};
@@ -120,23 +121,24 @@ export const InputContentStyle = styled.span<{ $variant: InputVariants }>`
 
 const inputColors = {
   default: css`
-    color: var(--collective-color-text);
+    color: var(--white-color);
 
     &:disabled {
       color: var(--collective-color-textSecondary);
     }
 
     &::placeholder {
-      color: var(--collective-color-textSecondary);
+      color: var(--white-color);
+      opacity: 80%;
     }
 
     &:-webkit-autofill {
       box-shadow: 0 0 0 100px var(--collective-color-controlBg) inset !important;
-      color: var(--collective-color-text) !important;
+      color: var(--white-color) !important;
     }
 
     &:-internal-autofill-selected {
-      color: var(--collective-color-text) !important;
+      color: var(--white-color) !important;
     }
   `,
   accent: css`
@@ -171,7 +173,8 @@ export const InputStyle = styled.input<{
   font-family: inherit;
   font-weight: 400;
   font-size: 28px;
-  line-height: 12px;
+  line-height: 38px;
+
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -225,6 +228,7 @@ export const InputMessageStyle = styled.span<{
   font-size: ${({ theme }) => theme.fontSizesMap.xxs}px;
   border-radius: ${({ theme }) => theme.borderRadiusesMap.sm}px;
   padding: 6px 10px;
+
   white-space: nowrap;
   overflow: hidden;
   box-sizing: border-box;

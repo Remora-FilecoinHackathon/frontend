@@ -12,6 +12,7 @@
       "icons:convert": "node ./components/ui/icons/converter/index.js"
    },
    "dependencies": {
+      "@chakra-ui/react": "^2.4.9",
       "@darkobits/mask-string": "^2.0.1",
       "@lidofinance/analytics-matomo": "^0.13.0",
       "@lidofinance/next-api-wrapper": "^0.10.0",
