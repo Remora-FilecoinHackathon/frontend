@@ -28,9 +28,6 @@ const Header: FC = () => (
       <LinksWrapper>
         <Link href="/borrow">Borrow</Link>
       </LinksWrapper>
-      <LinksWrapper>
-        <Link href="/active">Current Deals</Link>
-      </LinksWrapper>
     </HeaderLogoStyle>
     <HeaderActionsStyle>
       <HeaderWallet />

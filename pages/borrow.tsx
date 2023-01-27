@@ -25,6 +25,7 @@ import { useFilecoinBalance, useSDK } from 'sdk/hooks';
 import FormatToken from 'components/formatToken';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
+import PositionModule from 'components/modules/positionModule';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -78,81 +79,24 @@ export default function Home() {
         </Text>
       </div>
       <DealWrapper>
-        <NormalBlock onClick={openModal}>
-          <div style={{ marginLeft: '20px' }}>
-            <div
-              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
-            >
-              <p
-                style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}
-              >
-                25
-              </p>
-              <Fil style={{ marginLeft: '12px' }} />
-            </div>
-            <p>Available Liquidity</p>
-          </div>
-          <div style={{ marginRight: '20px' }}>
-            <div>
-              <p style={{ color: 'var(--secondary-color)' }}>2%</p>
-              <p>Interest Rate</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--primary-color)' }}>1yr</p>
-              <p>Duration</p>
-            </div>
-          </div>
-        </NormalBlock>
-        <NormalBlock onClick={openModal}>
-          <div style={{ marginLeft: '20px' }}>
-            <div
-              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
-            >
-              <p
-                style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}
-              >
-                0.05
-              </p>
-              <Fil style={{ marginLeft: '12px' }} />
-            </div>
-            <p>Available Liquidity</p>
-          </div>
-          <div style={{ marginRight: '20px' }}>
-            <div>
-              <p style={{ color: 'var(--secondary-color)' }}>2%</p>
-              <p>Interest Rate</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--primary-color)' }}>1yr</p>
-              <p>Duration</p>
-            </div>
-          </div>
-        </NormalBlock>
-        <NormalBlock onClick={openModal}>
-          <div style={{ marginLeft: '20px' }}>
-            <div
-              style={{ display: 'flex', alignItems: 'center', margin: '8px' }}
-            >
-              <p
-                style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}
-              >
-                10.5
-              </p>
-              <Fil style={{ marginLeft: '12px' }} />
-            </div>
-            <p>Available Liquidity</p>
-          </div>
-          <div style={{ marginRight: '20px' }}>
-            <div>
-              <p style={{ color: 'var(--secondary-color)' }}>2%</p>
-              <p>Interest Rate</p>
-            </div>
-            <div>
-              <p style={{ color: 'var(--primary-color)' }}>1yr</p>
-              <p>Duration</p>
-            </div>
-          </div>
-        </NormalBlock>
+        <PositionModule
+          openModal={openModal}
+          liquidity={20}
+          interestRate={2}
+          duration={12}
+        />
+        <PositionModule
+          openModal={openModal}
+          liquidity={0.05}
+          interestRate={3}
+          duration={3}
+        />
+        <PositionModule
+          openModal={openModal}
+          liquidity={42}
+          interestRate={5}
+          duration={2}
+        />
       </DealWrapper>
       <ConnectionError />
     </Layout>
