@@ -10,7 +10,10 @@ import {
 import { InputLabelStyle } from './LabelStyles';
 import { InputProps } from './types';
 
-function Input(props: InputProps, ref?: ForwardedRef<HTMLInputElement>) {
+function InputCalendar(
+  props: InputProps,
+  ref?: ForwardedRef<HTMLInputElement>,
+) {
   const {
     label,
     error,
@@ -27,6 +30,8 @@ function Input(props: InputProps, ref?: ForwardedRef<HTMLInputElement>) {
     color = 'default',
     wrapperRef,
     children,
+    selected,
+    onChange,
     readOnly = false,
     ...rest
   } = props;
@@ -68,19 +73,9 @@ function Input(props: InputProps, ref?: ForwardedRef<HTMLInputElement>) {
           <InputLeftDecoratorStyle>{leftDecorator}</InputLeftDecoratorStyle>
         )}
 
-        <InputContentStyle $variant={variant}>
-          <InputStyle
-            $color={color}
-            placeholder={placeholder}
-            aria-invalid={hasError}
-            type="text"
-            ref={ref}
-            readOnly={readOnly}
-            {...rest}
-          />
-        </InputContentStyle>
+        <InputContentStyle $variant={variant}></InputContentStyle>
 
-        {hasErrorMessage && (
+        {/* {hasErrorMessage && (
           <InputMessageStyle $variant="error" $bordered>
             {error}
           </InputMessageStyle>
@@ -98,10 +93,10 @@ function Input(props: InputProps, ref?: ForwardedRef<HTMLInputElement>) {
 
         {hasRightDecorator && (
           <InputRightDecoratorStyle>{rightDecorator}</InputRightDecoratorStyle>
-        )}
+        )} */}
       </InputWrapperStyle>
     </div>
   );
 }
 
-export default forwardRef(Input);
+export default forwardRef(InputCalendar);
