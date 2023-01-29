@@ -1,6 +1,7 @@
 import { FormEventHandler, FormEvent, ChangeEvent } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
 import Layout from 'components/layout';
 import NormalBlock from 'components/normalBlock/';
@@ -14,6 +15,7 @@ import { Input, Button, Fil, Heading, Text, Eclipse } from '../components/ui';
 import {
   useExampleContractRPC,
   useExampleContractWeb3,
+  useLendingManagerContractWeb3,
   useModal,
 } from '../hooks';
 
@@ -31,9 +33,10 @@ const DealWrapper = styled.div`
 export default function Home() {
   // inputs
   const [interestValue, setInterestValue] = useState('');
-  const [amount, setAmount] = useState('');
   const [endDate, setEndDate] = useState<Date | null>(new Date());
   const [submit, setSubmit] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
+
   const { account } = useSDK();
 
   const color = '#DCDCDC';
@@ -88,36 +91,26 @@ export default function Home() {
     }
   `;
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 250);
+  }, []);
+
   const handleInterestChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setInterestValue(event.currentTarget.value as string);
-  };
-
-  const handleAmountChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setAmount(event.currentTarget.value as string);
   };
 
   const NewContractInput = () => {
     return (
       <>
-        <form action="" method="post" onSubmit={handleSubmit}>
+        <form
+          action=""
+          method="post"
+          onSubmit={handleSubmit}
+          style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}
+        >
           <NormalBlock style={{ display: 'flex', flexDirection: 'column' }}>
-            <InputWrapper>
-              <Input
-                id="fil"
-                fullwidth
-                placeholder="0"
-                value={amount}
-                onChange={handleAmountChange}
-                rightDecorator={
-                  <>
-                    <Fil />
-                    <DecoratorLabelStyle>Fil</DecoratorLabelStyle>
-                  </>
-                }
-                label="Amount"
-              />
-            </InputWrapper>
-
             <InputWrapper>
               <Input
                 id="interest-rate"
@@ -190,12 +183,21 @@ export default function Home() {
     );
   };
 
+  const contractWeb3 = useLendingManagerContractWeb3();
+
   const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
     event: FormEvent,
   ) => {
     event.preventDefault();
-    if (account) {
-      console.log([amount, interestValue, endDate._d]);
+    if (account && endDate._d && interestValue) {
+      console.log(
+        endDate._d.getTime(),
+        interestValue * 100,
+        // {
+        //   maxPriorityFeePerGas: priorityFee.result,
+        // },
+      );
+      // (interestValue, endDate._d);
     } else {
       openModal();
     }
@@ -219,7 +221,13 @@ export default function Home() {
         <title>Remora - Uncollateralized Lending</title>
       </Head>
       <div
-        style={{ textAlign: 'center', marginBottom: '20px', marginTop: '20px' }}
+        style={{
+          textAlign: 'center',
+          marginBottom: '20px',
+          marginTop: '20px',
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 1s',
+        }}
       >
         <Heading size="sm">Lend Your Fil</Heading>
         <Text color="secondary" size="xs">

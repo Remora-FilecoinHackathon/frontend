@@ -1,9 +1,10 @@
 import { contractHooksFactory } from '../sdk/factories';
-import { getExampleAddress } from 'config';
-import { ExampleAbi__factory } from 'generated';
+import { getSmartContractAddress } from 'config';
+import { LendingManagerAbi__factory } from 'generated';
 
-const example = contractHooksFactory(ExampleAbi__factory, (chainId) =>
-  getExampleAddress(chainId),
+const lendingManager = contractHooksFactory(
+  LendingManagerAbi__factory,
+  (chainId) => getSmartContractAddress(chainId),
 );
-export const useExampleContractRPC = example.useContractRPC;
-export const useExampleContractWeb3 = example.useContractWeb3;
+export const useLendingManagerContractRPC = lendingManager.useContractRPC;
+export const useLendingManagerContractWeb3 = lendingManager.useContractWeb3;
