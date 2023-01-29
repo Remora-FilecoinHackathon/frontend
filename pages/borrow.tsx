@@ -1,6 +1,9 @@
 import Layout from 'components/layout';
 
-import { useLendingManagerContractWeb3 } from '../hooks';
+import {
+  useLendingManagerContractWeb3,
+  useLendingManagerContractRPC,
+} from '../hooks';
 import { useSDK } from 'sdk/hooks';
 import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
@@ -20,6 +23,7 @@ import { useModal } from '../hooks';
 import { MODAL } from '../providers';
 import PositionModule from 'components/modules/PositionModule';
 import StackedBlock from 'components/stackedBlock';
+import { useContractSWR } from 'sdk/hooks/useContractSWR';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -83,6 +87,17 @@ export default function Home() {
   `;
 
   const contractWeb3 = useLendingManagerContractWeb3();
+  const contractRPC = useLendingManagerContractRPC();
+
+  const loanKeys = useContractSWR({
+    contract: contractRPC,
+    method: 'loanKeys',
+    params: [0],
+  });
+
+  useEffect(() => {
+    console.log(loanKeys);
+  }, []);
 
   const handleReputationSubmit:
     | FormEventHandler<HTMLFormElement>
@@ -109,11 +124,11 @@ export default function Home() {
     }
   };
 
-  function handleModuleClick(loankey) {
-    setSelectedModule({
-      // which module by loankey got selected
-    });
-  }
+  // function handleModuleClick(loankey) {
+  //   setSelectedModule({
+  //     // which module by loankey got selected
+  //   });
+  // }
 
   useEffect(() => {
     setTimeout(() => {
