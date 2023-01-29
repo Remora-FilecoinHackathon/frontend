@@ -4,7 +4,7 @@ import React from 'react';
 
 const PositionModule = ({ openModal, liquidity, interestRate, duration }) => {
   return (
-    <NormalBlock onClick={openModal}>
+    <NormalBlock onClick={openModal} style={{ cursor: 'pointer' }}>
       <div style={{ marginLeft: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
           <p style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}>

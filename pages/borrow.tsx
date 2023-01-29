@@ -32,6 +32,11 @@ export default function Home() {
   const [amount, setAmount] = useState('');
   const { account } = useSDK();
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedModule, setSelectedModule] = useState({
+    liquidity: 0,
+    interestRate: 0,
+    duration: 0,
+  });
 
   useEffect(() => {
     if (newContract) {
@@ -95,14 +100,20 @@ export default function Home() {
     event: FormEvent,
   ) => {
     event.preventDefault();
-    if (account && endDate._d && interestValue) {
-      // what is loan key?
-      // what is  mineractoraddress
+    if (account) {
+      // what is loan key? (is this ID?)
+      // what is  mineractoraddress (account?)
       // createBorrow(, amount, )
     } else {
       openModal();
     }
   };
+
+  function handleModuleClick(loankey) {
+    setSelectedModule({
+      // which module by loankey got selected
+    });
+  }
 
   useEffect(() => {
     setTimeout(() => {

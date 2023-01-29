@@ -9,7 +9,7 @@ import {
   Whitepaper,
 } from 'components/ui';
 import { relative } from 'path';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { HeroStyles } from './heroStyles';
 
@@ -100,16 +100,16 @@ function Hero(props: any) {
         </Text>
       </HeroStyles>
       <ButtonWrapper>
-        <Link href="/lend">
+        <a href="/lend">
           <Button size="lg" variant="filled" style={{ margin: '20px' }}>
             Lend
           </Button>
-        </Link>
-        <Link href="/borrow">
+        </a>
+        <a href="/borrow">
           <Button size="lg" variant="outlined" style={{ margin: '20px' }}>
             Borrow
           </Button>
-        </Link>
+        </a>
       </ButtonWrapper>
 
       <BackgroundWrapper>

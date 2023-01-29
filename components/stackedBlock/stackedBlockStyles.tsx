@@ -11,7 +11,6 @@ export const StackedBlockStyles = styled.div`
   border: 1px solid #353535;
   box-sizing: border-box;
   padding-bottom: 20px;
-  cursor: pointer;
   justify-content: space-between;
   align-items: flex-end;
 

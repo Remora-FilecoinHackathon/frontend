@@ -13,7 +13,7 @@ export const WalletModalConnectedStyle = styled.div`
 `;
 
 export const WalletModalConnectorStyle = styled.div`
-  color: var(--collective-color-textSecondary);
+  color: var(--white-color);
   font-size: ${({ theme }) => theme.fontSizesMap.xxs}px;
   line-height: 1.4em;
   flex-grow: 1;
