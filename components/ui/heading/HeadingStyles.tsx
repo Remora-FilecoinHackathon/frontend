@@ -12,7 +12,7 @@ export const sizes = {
     line-height: 1.3em;
   `,
   lg: css`
-    font-size: ${({ theme }) => theme.fontSizesMap.xxxl}px;
+    font-size: 60px;
     line-height: 1.3em;
   `,
 };
