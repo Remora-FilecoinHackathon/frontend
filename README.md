@@ -1,6 +1,6 @@
 # Remora Frontend
 
-[Remora]Frontend Template is a project template for developing Filecoin dapp frontend on Filecoin and connect it to FEVM smart contracts. It includes Next.js, SWR, ethers, Remora UI components and styled-components. This template aims to help developers quickly get started on their dapp with minimal setup.
+[Remora]
 
 The template is based on [Lido Frontend template](https://github.com/lidofinance/lido-frontend-template) and has been adapted for Filecoin FEVM, supports both Wallaby and Hyperspace testnets
 
