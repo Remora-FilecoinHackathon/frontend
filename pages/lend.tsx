@@ -2,6 +2,7 @@ import { FormEventHandler, FormEvent, ChangeEvent } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import { ethers } from 'ethers';
 
 import Layout from 'components/layout';
 import NormalBlock from 'components/normalBlock/';
@@ -36,6 +37,7 @@ export default function Home() {
   const [endDate, setEndDate] = useState<Date | null>(new Date());
   const [submit, setSubmit] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [amount, setAmount] = useState('');
 
   const { account } = useSDK();
 
@@ -101,6 +103,10 @@ export default function Home() {
     setInterestValue(event.currentTarget.value as string);
   };
 
+  const handleAmountChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setAmount(event.currentTarget.value as string);
+  };
+
   const NewContractInput = () => {
     return (
       <>
@@ -111,6 +117,21 @@ export default function Home() {
           style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}
         >
           <NormalBlock style={{ display: 'flex', flexDirection: 'column' }}>
+            <InputWrapper>
+              <Input
+                id="fil"
+                fullwidth
+                placeholder="0"
+                value={amount}
+                onChange={handleAmountChange}
+                rightDecorator={
+                  <>
+                    <Fil />
+                    <DecoratorLabelStyle>Fil</DecoratorLabelStyle>
+                  </>
+                }
+              />
+            </InputWrapper>
             <InputWrapper>
               <Input
                 id="interest-rate"
@@ -185,19 +206,32 @@ export default function Home() {
 
   const contractWeb3 = useLendingManagerContractWeb3();
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
+  const ENDPOINT_ADDRESS = 'https://api.hyperspace.node.glif.io/rpc/v1';
+
+  async function callRpc(method: string, params?: any) {
+    const res = await axios.post(ENDPOINT_ADDRESS, {
+      jsonrpc: '2.0',
+      method: method,
+      params: params,
+      id: 1,
+    });
+    return res.data;
+  }
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = async (
     event: FormEvent,
   ) => {
     event.preventDefault();
-    if (account && endDate._d && interestValue) {
-      console.log(
+    var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+    if (account) {
+      contractWeb3?.createLendingPosition(
         endDate._d.getTime(),
-        interestValue * 100,
-        // {
-        //   maxPriorityFeePerGas: priorityFee.result,
-        // },
+        parseFloat(interestValue) * 100,
+        {
+          value: ethers.utils.parseEther(amount),
+          maxPriorityFeePerGas: priorityFee.result,
+        },
       );
-      // (interestValue, endDate._d);
     } else {
       openModal();
     }
