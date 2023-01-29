@@ -78,7 +78,7 @@ const getContrastColor = (props: InjectedProps) => {
 
 const getHoverColor = (props: InjectedProps) => {
   const colorsMap = {
-    primary: `var(--collective-color-primaryHover)`,
+    primary: `rgba(52, 248, 153, 0.7)`,
     secondary: `var(--collective-color-secondaryHover)`,
     warning: `var(--collective-color-warningHover)`,
     error: `var(--collective-color-errorHover)`,

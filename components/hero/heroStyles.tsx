@@ -8,6 +8,6 @@ export const HeroStyles = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 50px;
+  margin-top: 200px;
   border-radius: 25px;
 `;
