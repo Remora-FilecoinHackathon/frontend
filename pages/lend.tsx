@@ -1,12 +1,4 @@
-import {
-  FormEventHandler,
-  FormEvent,
-  FC,
-  ChangeEventHandler,
-  ChangeEvent,
-  MouseEvent,
-  ReactNode,
-} from 'react';
+import { FormEventHandler, FormEvent, ChangeEvent } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 
@@ -18,7 +10,7 @@ import styled from 'styled-components';
 
 import { useState, useEffect } from 'react';
 import { trackEvent, MatomoEventType } from '@lidofinance/analytics-matomo';
-import { Input, Button, Fil, Heading, Text } from '../components/ui';
+import { Input, Button, Fil, Heading, Text, Eclipse } from '../components/ui';
 import {
   useExampleContractRPC,
   useExampleContractWeb3,
@@ -30,6 +22,7 @@ import { useSDK } from 'sdk/hooks';
 
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
+import { AbsoluteCenter } from '@chakra-ui/react';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -66,6 +59,35 @@ export default function Home() {
     font-weight: 600;
     margin-left: 15px;
   `;
+
+  const BackgroundWrapper = styled.div`
+    position: absolute;
+    top: 0;
+    left: -100px;
+    z-index: -1;
+    transition: left 4s ease-in-out;
+    animation: morph 4s ease-in-out infinite;
+    @keyframes left {
+      from {
+        left: -150px;
+      }
+      to {
+        left: -100px;
+      }
+    }
+    @keyframes morph {
+      0% {
+        transform: skew(1);
+      }
+      50% {
+        transform: skew(1.05);
+      }
+      100% {
+        transform: skew(1);
+      }
+    }
+  `;
+
   const handleInterestChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setInterestValue(event.currentTarget.value as string);
   };
@@ -158,7 +180,7 @@ export default function Home() {
               </div>
             </CalendarInputWrapper>
             <ButtonWrapper>
-              <Button size="sm" variant="filled" type="submit">
+              <Button variant="filled" type="submit">
                 Submit
               </Button>
             </ButtonWrapper>
@@ -207,6 +229,9 @@ export default function Home() {
       <DealWrapper>
         <NewContractInput />
       </DealWrapper>
+      <BackgroundWrapper>
+        <Eclipse />
+      </BackgroundWrapper>
       <ConnectionError />
     </Layout>
   );

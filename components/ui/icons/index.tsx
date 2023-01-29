@@ -1,6 +1,6 @@
 // THIS FILE IS AUTO GENERATED
 
-import React from 'react'
+import React from 'react';
 
 export const Ambire = React.forwardRef(function Ambire(
   props: React.SVGProps<SVGSVGElement>,
@@ -852,6 +852,40 @@ export const Deposit = React.forwardRef(function Deposit(
         clipRule="evenodd"
         d="M5 3h14a3 3 0 011 5.82V18a3 3 0 01-3 3H7a3 3 0 01-3-3V8.82A3 3 0 015 3zm9 10h-4a1 1 0 010-2h4a1 1 0 110 2zm4 5a1 1 0 01-1 1H7a1 1 0 01-1-1V9h12v9zM5 7h14a1 1 0 100-2H5a1 1 0 100 2z"
       />
+    </svg>
+  );
+});
+
+export const Eclipse = React.forwardRef(function Edit(
+  props: React.SVGProps<SVGSVGElement>,
+  svgRef?: React.Ref<SVGSVGElement>,
+) {
+  return (
+    <svg
+      width="863"
+      height="606"
+      viewBox="0 0 863 606"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M467 275.16C528.5 275.16 726 651.16 852.5 600.66C885 548.16 852.5 -66.8398 517.5 168.16C496 -61.3398 11.0002 -83.3398 0.000244141 275.16C0.000244141 420.135 421.5 275.16 467 275.16Z"
+        fill="url(#paint0_linear_10_134)"
+        fill-opacity="0.06"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_10_134"
+          x1="431.181"
+          y1="0"
+          x2="431.181"
+          y2="605.327"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop />
+          <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 });
