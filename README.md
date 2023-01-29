@@ -1,6 +1,6 @@
-# CollectifDAO Frontend Template
+# Remora Frontend
 
-[CollectifDAO](https://collectif.finance/) Frontend Template is a project template for developing Filecoin dapp frontend on Filecoin and connect it to FEVM smart contracts. It includes Next.js, SWR, ethers, CollectifDAO UI components and styled-components. This template aims to help developers quickly get started on their dapp with minimal setup.
+[Remora]Frontend Template is a project template for developing Filecoin dapp frontend on Filecoin and connect it to FEVM smart contracts. It includes Next.js, SWR, ethers, Remora UI components and styled-components. This template aims to help developers quickly get started on their dapp with minimal setup.
 
 The template is based on [Lido Frontend template](https://github.com/lidofinance/lido-frontend-template) and has been adapted for Filecoin FEVM, supports both Wallaby and Hyperspace testnets
 
@@ -60,6 +60,7 @@ export const useExampleContractWeb3 = example.useContractWeb3;
 The factory creates two hooks that will return the JSON RPC and Web3 contract interfaces which will allow us to use read and write methods respectively.
 
 ```
+
 Step 5. Start working with your contract. For read methods, use the `useContractSWR` hook that wraps your rpc interface in `useSwr` for caching and re-validation. Write methods are available directly on the `contractWeb3` property and are automatically typed thanks to generated types.
 
 ```ts
