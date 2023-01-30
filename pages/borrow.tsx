@@ -24,6 +24,7 @@ import { MODAL } from '../providers';
 import PositionModule from 'components/modules/PositionModule';
 import StackedBlock from 'components/stackedBlock';
 import { useContractSWR } from 'sdk/hooks/useContractSWR';
+import AccordianUi from 'components/accordian-ui';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -32,7 +33,7 @@ const DealWrapper = styled.div`
 export default function Home() {
   const [newContract, setNewContract] = useState(false);
   const [renderNewDiv, setRenderNewDiv] = useState(false);
-  const [repIsSuccess, setRepIsSuccess] = useState(true);
+  const [repIsSuccess, setRepIsSuccess] = useState(false);
   const [amount, setAmount] = useState('');
   const { account } = useSDK();
   const [isVisible, setIsVisible] = useState(false);
@@ -243,6 +244,31 @@ export default function Home() {
           </form>
         </>
       )}
+      <div
+        style={{
+          textAlign: 'center',
+          marginBottom: '10px',
+          marginTop: '20px',
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 1s',
+        }}
+      >
+        <Text
+          style={{
+            color: 'var(--white-color)',
+            marginTop: '100px',
+            marginBottom: '2px',
+          }}
+          size="xl"
+        >
+          FAQ
+        </Text>
+        <Text color="secondary" size="xs">
+          Frequently Asked Questions
+        </Text>
+      </div>
+      <AccordianUi />
+
       <BackgroundWrapper>
         <Eclipse />
       </BackgroundWrapper>

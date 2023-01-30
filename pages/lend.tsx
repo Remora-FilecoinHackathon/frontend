@@ -26,6 +26,7 @@ import { useSDK } from 'sdk/hooks';
 import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
 import { AbsoluteCenter } from '@chakra-ui/react';
+import AccordianUi from 'components/accordian-ui';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -130,6 +131,7 @@ export default function Home() {
                     <DecoratorLabelStyle>Fil</DecoratorLabelStyle>
                   </>
                 }
+                label="Amount"
               />
             </InputWrapper>
             <InputWrapper>
@@ -195,7 +197,7 @@ export default function Home() {
             </CalendarInputWrapper>
             <ButtonWrapper>
               <Button variant="filled" type="submit">
-                Submit
+                Lend
               </Button>
             </ButtonWrapper>
           </NormalBlock>
@@ -265,12 +267,37 @@ export default function Home() {
       >
         <Heading size="sm">Lend Your Fil</Heading>
         <Text color="secondary" size="xs">
-          Create a new contract or see available contracts.
+          Create a new contract.
         </Text>
       </div>
       <DealWrapper>
         <NewContractInput />
       </DealWrapper>
+      <div
+        style={{
+          textAlign: 'center',
+          marginBottom: '10px',
+          marginTop: '20px',
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 1s',
+        }}
+      >
+        <Text
+          style={{
+            color: 'var(--white-color)',
+            marginTop: '30px',
+            marginBottom: '2px',
+          }}
+          size="xl"
+        >
+          FAQ
+        </Text>
+        <Text color="secondary" size="xs">
+          Frequently Asked Questions
+        </Text>
+      </div>
+      <AccordianUi />
+
       <BackgroundWrapper>
         <Eclipse />
       </BackgroundWrapper>
