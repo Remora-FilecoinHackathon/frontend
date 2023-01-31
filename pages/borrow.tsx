@@ -1,9 +1,11 @@
 import Layout from 'components/layout';
 
+import axios from 'axios';
 import {
   useLendingManagerContractWeb3,
   useLendingManagerContractRPC,
 } from '../hooks';
+import LendingManagerABI from '../abi/LendingManager.abi.json';
 import { useSDK } from 'sdk/hooks';
 import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
@@ -25,6 +27,8 @@ import PositionModule from 'components/modules/PositionModule';
 import StackedBlock from 'components/stackedBlock';
 import { useContractSWR } from 'sdk/hooks/useContractSWR';
 import AccordianUi from 'components/accordian-ui';
+import { ethers } from 'ethers';
+import { position } from '@chakra-ui/react';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -33,15 +37,13 @@ const DealWrapper = styled.div`
 export default function Home() {
   const [newContract, setNewContract] = useState(false);
   const [renderNewDiv, setRenderNewDiv] = useState(false);
-  const [repIsSuccess, setRepIsSuccess] = useState(false);
+  const [repIsSuccess, setRepIsSuccess] = useState(true);
   const [amount, setAmount] = useState('');
   const { account } = useSDK();
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedModule, setSelectedModule] = useState({
-    liquidity: 0,
-    interestRate: 0,
-    duration: 0,
-  });
+  const [positions, setPositions] = useState();
+  const [isSelected, setIsSelected] = useState('');
+  const [submit, setSubmit] = useState();
 
   useEffect(() => {
     if (newContract) {
@@ -87,17 +89,35 @@ export default function Home() {
     }
   `;
 
-  const contractWeb3 = useLendingManagerContractWeb3();
-  const contractRPC = useLendingManagerContractRPC();
-
-  const loanKeys = useContractSWR({
-    contract: contractRPC,
-    method: 'loanKeys',
-    params: [0],
-  });
-
   useEffect(() => {
-    console.log(loanKeys);
+    (async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(
+        '0xAEF78CCb5984EecfAC2D2F7b592A638f59F243f9',
+        LendingManagerABI,
+        provider,
+      );
+      //use getLoanKeyNumber function when luca finishes it
+      const loanKeysTotalNumber = ['key'];
+      const positionsArray = [];
+      for (let i = 0; i < loanKeysTotalNumber.length; i++) {
+        const loanKey = await contract.loanKeys([i]);
+        const position = await contract.positions(loanKey._hex);
+        const positionFormatted = {
+          loanKey: loanKey,
+          lender: position.lender,
+          availableAmount: ethers.utils.formatEther(
+            position.availableAmount.toString(),
+          ),
+
+          interestRate: position.interestRate.toString() / 100,
+          endDate: position.endTimestamp.toString(),
+        };
+
+        positionsArray.push(positionFormatted);
+      }
+      setPositions(positionsArray);
+    })();
   }, []);
 
   const handleReputationSubmit:
@@ -112,25 +132,46 @@ export default function Home() {
     }
   };
 
-  const handleBorrowSubmit: FormEventHandler<HTMLFormElement> | undefined = (
-    event: FormEvent,
-  ) => {
+  const contractWeb3 = useLendingManagerContractWeb3();
+
+  const ENDPOINT_ADDRESS = 'https://api.hyperspace.node.glif.io/rpc/v1';
+
+  async function callRpc(method: string, params?: any) {
+    const res = await axios.post(ENDPOINT_ADDRESS, {
+      jsonrpc: '2.0',
+      method: method,
+      params: params,
+      id: 1,
+    });
+    return res.data;
+  }
+
+  const handleBorrowSubmit:
+    | FormEventHandler<HTMLFormElement>
+    | undefined = async (event: FormEvent) => {
     event.preventDefault();
+    var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
     if (account) {
-      // what is loan key? (is this ID?)
-      // what is  mineractoraddress (account?)
-      // createBorrow(, amount, )
-    } else {
-      openModal();
+      contractWeb3?.createBorrow(
+        //loan key
+        isSelected,
+        // amount
+        ethers.utils.parseEther(amount),
+        //miner acttor?
+
+        {
+          value: ethers.utils.parseEther(amount),
+          maxPriorityFeePerGas: priorityFee.result,
+        },
+      );
     }
   };
+  // handling what contract is selected
+  const handleSelected = (id: string) => {
+    setIsSelected(id);
+  };
 
-  // function handleModuleClick(loankey) {
-  //   setSelectedModule({
-  //     // which module by loankey got selected
-  //   });
-  // }
-
+  // handling fade in animations
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
@@ -214,24 +255,17 @@ export default function Home() {
               >
                 Select Contract
               </Text>
-              <PositionModule
-                openModal={openModal}
-                liquidity={20}
-                interestRate={2}
-                duration={12}
-              />
-              <PositionModule
-                openModal={openModal}
-                liquidity={0.05}
-                interestRate={3}
-                duration={3}
-              />
-              <PositionModule
-                openModal={openModal}
-                liquidity={42}
-                interestRate={5}
-                duration={2}
-              />
+              {positions?.map((position) => (
+                <PositionModule
+                  key={position.loanKey}
+                  loanKey={position.loanKey}
+                  liquidity={position.availableAmount}
+                  interestRate={position.interestRate}
+                  duration={position.endDate}
+                  handleSelected={handleSelected}
+                  isSelected={isSelected}
+                />
+              ))}
             </DealWrapper>
             <Button
               style={{ marginTop: '30px' }}

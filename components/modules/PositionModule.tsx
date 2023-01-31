@@ -1,10 +1,27 @@
 import NormalBlock from 'components/normalBlock';
 import { Fil } from 'components/ui';
 import React from 'react';
+import moment from 'moment';
 
-const PositionModule = ({ openModal, liquidity, interestRate, duration }) => {
+const PositionModule = ({
+  liquidity,
+  interestRate,
+  duration,
+  loanKey,
+  handleSelected,
+  isSelected,
+}) => {
   return (
-    <NormalBlock onClick={openModal} style={{ cursor: 'pointer' }}>
+    <NormalBlock
+      onClick={handleSelected(loanKey)}
+      style={{
+        border:
+          isSelected === loanKey
+            ? '1px solid var(--secondary-color)'
+            : '1px solid #353535;',
+        cursor: 'pointer',
+      }}
+    >
       <div style={{ marginLeft: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
           <p style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}>
@@ -20,7 +37,11 @@ const PositionModule = ({ openModal, liquidity, interestRate, duration }) => {
           <p>Interest Rate</p>
         </div>
         <div>
-          <p style={{ color: 'var(--primary-color)' }}>{duration} months</p>
+          <p style={{ color: 'var(--primary-color)' }}>
+            {moment(
+              moment.unix(duration / 1000).format('MM/DD/YYYY'),
+            ).fromNow()}
+          </p>
           <p>Duration</p>
         </div>
       </div>
