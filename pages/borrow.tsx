@@ -57,10 +57,6 @@ export default function Home() {
     setAmount(event.currentTarget.value as string);
   };
 
-  const InputWrapper = styled.div`
-    margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
-    width: 100%;
-  `;
   const DecoratorLabelStyle = styled.span`
     display: inline-block;
     font-size: 30px;
@@ -98,7 +94,7 @@ export default function Home() {
         provider,
       );
       //use getLoanKeyNumber function when luca finishes it
-      const loanKeysTotalNumber = ['key'];
+      const loanKeysTotalNumber = ['key', 'key'];
       const positionsArray = [];
       for (let i = 0; i < loanKeysTotalNumber.length; i++) {
         const loanKey = await contract.loanKeys([i]);
@@ -169,6 +165,7 @@ export default function Home() {
   // handling what contract is selected
   const handleSelected = (id: string) => {
     setIsSelected(id);
+    console.log(isSelected);
   };
 
   // handling fade in animations
@@ -229,7 +226,7 @@ export default function Home() {
                 Set Amount To Borrow
               </Text>
               <StackedBlock style={{ marginBottom: '30px' }}>
-                <InputWrapper>
+                <div style={{ marginBottom: '10px', width: '100%' }}>
                   <Input
                     id="fil"
                     fullwidth
@@ -243,7 +240,7 @@ export default function Home() {
                       </>
                     }
                   />
-                </InputWrapper>{' '}
+                </div>{' '}
               </StackedBlock>
               <Text
                 size="sm"

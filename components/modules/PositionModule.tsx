@@ -13,12 +13,12 @@ const PositionModule = ({
 }) => {
   return (
     <NormalBlock
-      onClick={handleSelected(loanKey)}
+      onClick={() => handleSelected(loanKey)}
       style={{
         border:
           isSelected === loanKey
             ? '1px solid var(--secondary-color)'
-            : '1px solid #353535;',
+            : '1px solid #353535',
         cursor: 'pointer',
       }}
     >
