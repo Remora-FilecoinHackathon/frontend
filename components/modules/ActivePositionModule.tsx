@@ -1,9 +1,9 @@
-import NormalBlock from 'components/normalBlock';
 import { Fil } from 'components/ui';
-import React from 'react';
+import React, { useEffect } from 'react';
 import moment from 'moment';
+import StackedBlock from 'components/stackedBlock';
 
-const PositionModule = ({
+const ActivePositionModule = ({
   liquidity,
   interestRate,
   endDate,
@@ -11,19 +11,16 @@ const PositionModule = ({
   handleSelected,
   isSelected,
 }) => {
-  const toggleSelection = () => {
-    handleSelected(isSelected === loanKey ? '' : loanKey);
-  };
   return (
-    <NormalBlock
-      onClick={+moment() < endDate ? toggleSelection : undefined}
+    <StackedBlock
+      onClick={() => handleSelected(loanKey)}
       style={{
         border:
           isSelected === loanKey
             ? '1px solid var(--secondary-color)'
             : '1px solid #353535',
-        cursor: +moment() < endDate ? 'pointer' : 'not-allowed',
-        opacity: +moment() < endDate ? 1 : 0.5,
+        cursor: 'pointer',
+        marginBottom: '60px',
       }}
     >
       <div style={{ marginLeft: '20px' }}>
@@ -51,8 +48,8 @@ const PositionModule = ({
           <p>Duration</p>
         </div>
       </div>
-    </NormalBlock>
+    </StackedBlock>
   );
 };
 
-export default PositionModule;
+export default ActivePositionModule;

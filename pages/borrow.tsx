@@ -114,7 +114,7 @@ export default function Home() {
       }
       setPositions(positionsArray);
     })();
-  }, []);
+  }, [account]);
 
   const handleReputationSubmit:
     | FormEventHandler<HTMLFormElement>
@@ -161,6 +161,8 @@ export default function Home() {
         },
       );
     }
+    setAmount('');
+    setIsSelected('');
   };
   // handling what contract is selected
   const handleSelected = (id: string) => {
@@ -191,6 +193,8 @@ export default function Home() {
                   If successful select which loan fits your needs!
                 </Text>
               </HeadingWrapper>
+              <ConnectionError />
+
               <Button fullwidth type="submit">
                 Check
               </Button>
@@ -213,6 +217,8 @@ export default function Home() {
                 </Text>
               </HeadingWrapper>
             </div>
+            <ConnectionError />
+
             <DealWrapper>
               <Text
                 size="sm"
@@ -225,7 +231,7 @@ export default function Home() {
                 {' '}
                 Set Amount To Borrow
               </Text>
-              <StackedBlock style={{ marginBottom: '30px' }}>
+              <StackedBlock style={{ marginBottom: '40px' }}>
                 <div style={{ marginBottom: '10px', width: '100%' }}>
                   <Input
                     id="fil"
@@ -258,7 +264,7 @@ export default function Home() {
                   loanKey={position.loanKey}
                   liquidity={position.availableAmount}
                   interestRate={position.interestRate}
-                  duration={position.endDate}
+                  endDate={position.endDate}
                   handleSelected={handleSelected}
                   isSelected={isSelected}
                 />
@@ -279,7 +285,7 @@ export default function Home() {
         style={{
           textAlign: 'center',
           marginBottom: '10px',
-          marginTop: '20px',
+          marginTop: '80px',
           opacity: isVisible ? 1 : 0,
           transition: 'opacity 1s',
         }}
@@ -287,7 +293,6 @@ export default function Home() {
         <Text
           style={{
             color: 'var(--white-color)',
-            marginTop: '100px',
             marginBottom: '2px',
           }}
           size="xl"
@@ -303,7 +308,6 @@ export default function Home() {
       <BackgroundWrapper>
         <Eclipse />
       </BackgroundWrapper>
-      <ConnectionError />
     </Layout>
   );
 }

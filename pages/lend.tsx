@@ -14,7 +14,6 @@ import { useState, useEffect } from 'react';
 import { Input, Button, Fil, Heading, Text, Eclipse } from '../components/ui';
 import { useLendingManagerContractWeb3, useModal } from '../hooks';
 
-import { useWeb3 } from 'sdk/web3-react';
 import { useSDK } from 'sdk/hooks';
 
 import { MODAL } from '../providers';
@@ -36,11 +35,6 @@ export default function Home() {
 
   const color = '#DCDCDC';
 
-  const InputWrapper = styled.div`
-    margin-bottom: 20px;
-    width: 100%;
-  `;
-
   const CalendarInputWrapper = styled.div`
     margin-bottom: 25px;
     width: 100%;
@@ -61,7 +55,7 @@ export default function Home() {
   const BackgroundWrapper = styled.div`
     position: absolute;
     top: 0;
-    left: -100px;
+    left: -150px;
     z-index: -1;
     transition: left 4s ease-in-out;
     animation: morph 4s ease-in-out infinite;
@@ -128,6 +122,9 @@ export default function Home() {
           maxPriorityFeePerGas: priorityFee.result,
         },
       );
+      setAmount('');
+      setInterestValue('');
+      setEndDate(new Date());
     } else {
       openModal();
     }
@@ -154,6 +151,8 @@ export default function Home() {
           Create a new contract.
         </Text>
       </div>
+      <ConnectionError />
+
       <DealWrapper>
         <form
           action=""
@@ -243,12 +242,15 @@ export default function Home() {
                 </div>
               </div>
             </CalendarInputWrapper>
-            <ButtonWrapper>
-              <Button variant="filled" type="submit">
-                Lend
-              </Button>
-            </ButtonWrapper>
           </NormalBlock>
+          <Button
+            fullwidth
+            variant="filled"
+            type="submit"
+            style={{ marginTop: '30px' }}
+          >
+            Lend
+          </Button>
         </form>
       </DealWrapper>
       <div
@@ -279,7 +281,6 @@ export default function Home() {
       <BackgroundWrapper>
         <Eclipse />
       </BackgroundWrapper>
-      <ConnectionError />
     </Layout>
   );
 }

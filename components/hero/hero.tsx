@@ -45,7 +45,7 @@ function Hero(props: any) {
         transform: translate(0, 100px);
       }
       50% {
-        transform: translate(0, 0);
+        transform: translate(0, 0px);
       }
       100% {
         transform: translate(0, 100px);
@@ -58,7 +58,7 @@ function Hero(props: any) {
     top: 20px;
     left: 200px;
     z-index: -1;
-    animation: bubble 30s ease-in-out infinite;
+    animation: bubble 25s ease-in-out infinite;
 
 
 
@@ -67,8 +67,11 @@ function Hero(props: any) {
         transform: translate(0, 100px);
       }
       }
-      100% {
+      50% {
         transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(0, 100px);
       }
     }
   `;
@@ -115,6 +118,7 @@ function Hero(props: any) {
       <BackgroundWrapper>
         <EclipseColor />
       </BackgroundWrapper>
+
       <IconWrapper>
         <FloatingIcons />
       </IconWrapper>
