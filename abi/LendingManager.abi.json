@@ -11,6 +11,63 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "Empty_Amount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Empty_Lender",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "Impossible_Borrower",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "max",
+        "type": "uint256"
+      }
+    ],
+    "name": "InterestRate_Too_High",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Loan_No_More_Available",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Loan_Period_Excedeed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Miner_Bad_Reputation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Miner_Reputation_Value",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "No_Borrower_Permissions",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -76,9 +133,9 @@
       },
       {
         "indexed": false,
-        "internalType": "bytes",
+        "internalType": "string",
         "name": "minerActor",
-        "type": "bytes"
+        "type": "string"
       }
     ],
     "name": "CheckReputation",
@@ -429,6 +486,363 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "_owner",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes",
+            "name": "new_beneficiary",
+            "type": "bytes"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "val",
+                "type": "bytes"
+              },
+              {
+                "internalType": "bool",
+                "name": "neg",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct BigInt",
+            "name": "new_quota",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "new_expiration",
+            "type": "uint64"
+          }
+        ],
+        "internalType": "struct MinerTypes.ChangeBeneficiaryParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "changeBeneficiary",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "addr",
+        "type": "bytes"
+      }
+    ],
+    "name": "changeOwnerAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAvailableBalance",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "val",
+                "type": "bytes"
+              },
+              {
+                "internalType": "bool",
+                "name": "neg",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct BigInt",
+            "name": "available_balance",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct MinerTypes.GetAvailableBalanceReturn",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBeneficiary",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "beneficiary",
+                "type": "bytes"
+              },
+              {
+                "components": [
+                  {
+                    "components": [
+                      {
+                        "internalType": "bytes",
+                        "name": "val",
+                        "type": "bytes"
+                      },
+                      {
+                        "internalType": "bool",
+                        "name": "neg",
+                        "type": "bool"
+                      }
+                    ],
+                    "internalType": "struct BigInt",
+                    "name": "quota",
+                    "type": "tuple"
+                  },
+                  {
+                    "components": [
+                      {
+                        "internalType": "bytes",
+                        "name": "val",
+                        "type": "bytes"
+                      },
+                      {
+                        "internalType": "bool",
+                        "name": "neg",
+                        "type": "bool"
+                      }
+                    ],
+                    "internalType": "struct BigInt",
+                    "name": "used_quota",
+                    "type": "tuple"
+                  },
+                  {
+                    "internalType": "uint64",
+                    "name": "expiration",
+                    "type": "uint64"
+                  }
+                ],
+                "internalType": "struct CommonTypes.BeneficiaryTerm",
+                "name": "term",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct CommonTypes.ActiveBeneficiary",
+            "name": "active",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "new_beneficiary",
+                "type": "bytes"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bytes",
+                    "name": "val",
+                    "type": "bytes"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "neg",
+                    "type": "bool"
+                  }
+                ],
+                "internalType": "struct BigInt",
+                "name": "new_quota",
+                "type": "tuple"
+              },
+              {
+                "internalType": "uint64",
+                "name": "new_expiration",
+                "type": "uint64"
+              },
+              {
+                "internalType": "bool",
+                "name": "approved_by_beneficiary",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "approved_by_nominee",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct CommonTypes.PendingBeneficiaryChange",
+            "name": "proposed",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct MinerTypes.GetBeneficiaryReturn",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getOwner",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes",
+            "name": "owner",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "proposed",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct MinerTypes.GetOwnerReturn",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSectorSize",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint64",
+            "name": "sector_size",
+            "type": "uint64"
+          }
+        ],
+        "internalType": "struct MinerTypes.GetSectorSizeReturn",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVestingFunds",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "int64",
+                "name": "epoch",
+                "type": "int64"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bytes",
+                    "name": "val",
+                    "type": "bytes"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "neg",
+                    "type": "bool"
+                  }
+                ],
+                "internalType": "struct BigInt",
+                "name": "amount",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct CommonTypes.VestingFunds[]",
+            "name": "vesting_funds",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct MinerTypes.GetVestingFundsReturn",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes",
+            "name": "addr",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct MinerTypes.IsControllingAddressParam",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "isControllingAddress",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "is_controlling",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct MinerTypes.IsControllingAddressReturn",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "addr",
+        "type": "bytes"
+      }
+    ],
+    "name": "mockSetOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawBalance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

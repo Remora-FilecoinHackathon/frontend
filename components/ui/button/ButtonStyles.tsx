@@ -57,7 +57,7 @@ const sizes = {
 const getMainColor = (props: InjectedProps) => {
   const colorsMap = {
     primary: `var(--primary-color)`,
-    secondary: `var(--collective-color-secondary)`,
+    secondary: `var(--secondary-color)`,
     warning: `var(--collective-color-warning)`,
     error: `var(--collective-color-error)`,
     success: `var(--collective-color-success)`,

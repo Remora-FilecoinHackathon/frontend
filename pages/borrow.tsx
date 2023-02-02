@@ -89,12 +89,12 @@ export default function Home() {
     (async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
-        '0xAEF78CCb5984EecfAC2D2F7b592A638f59F243f9',
+        '0xa999Db46A5df0F8C1ba0dB06593186168F471D24',
         LendingManagerABI,
         provider,
       );
       //use getLoanKeyNumber function when luca finishes it
-      const loanKeysTotalNumber = ['key', 'key'];
+      const loanKeysTotalNumber = ['key'];
       const positionsArray = [];
       for (let i = 0; i < loanKeysTotalNumber.length; i++) {
         const loanKey = await contract.loanKeys([i]);
@@ -115,6 +115,18 @@ export default function Home() {
       setPositions(positionsArray);
     })();
   }, [account]);
+
+  const handleDeployMockMinerActor:
+    | FormEventHandler<HTMLFormElement>
+    | undefined = (event: FormEvent) => {
+    event.preventDefault();
+    if (account) {
+      // Do i pass account of wallet to reputation?
+      // contractWeb3.checkReputation(account);
+    } else {
+      openModal();
+    }
+  };
 
   const handleReputationSubmit:
     | FormEventHandler<HTMLFormElement>
@@ -183,17 +195,39 @@ export default function Home() {
         <title>Remora - Uncollateralized Lending</title>
       </Head>
 
-      {!repIsSuccess ? (
+      {!repIsSuccess || !account ? (
         <>
-          <form action="" method="post" onSubmit={handleReputationSubmit}>
+          <ConnectionError />
+
+          <form
+            action=""
+            method="post"
+            onSubmit={handleReputationSubmit}
+            style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}
+          >
             <div style={{ textAlign: 'center' }}>
               <HeadingWrapper>
-                <Heading size="sm">Check Reputation</Heading>
+                <Heading size="sm">Step 1: Deploy Contract</Heading>
                 <Text color="secondary" size="xs">
-                  If successful select which loan fits your needs!
+                  Deploy before checking reputation
                 </Text>
               </HeadingWrapper>
-              <ConnectionError />
+              <Button
+                fullwidth
+                type="submit"
+                variant={'outlined'}
+                style={{ marginBottom: '40px' }}
+              >
+                Deploy
+              </Button>
+
+              <HeadingWrapper>
+                <Heading size="sm">Step 2: Check Reputation</Heading>
+                <Text color="secondary" size="xs">
+                  Check your reputation and you will be able to select which
+                  loan fits your needs!
+                </Text>
+              </HeadingWrapper>
 
               <Button fullwidth type="submit">
                 Check

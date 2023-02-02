@@ -160,7 +160,6 @@ export default function Active() {
       <BackgroundWrapper>
         <Eclipse />
       </BackgroundWrapper>
-      <ConnectionError />
     </Layout>
   );
 }

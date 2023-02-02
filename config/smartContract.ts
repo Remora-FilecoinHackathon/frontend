@@ -3,9 +3,9 @@ import { CHAINS } from '../sdk/constants';
 export const SMARTCONTRACT_BY_NETWORK: {
   [key in CHAINS]: string;
 } = {
-  [CHAINS.FilecoinMainnet]: '0xAEF78CCb5984EecfAC2D2F7b592A638f59F243f9',
-  [CHAINS.Wallaby]: '0xAEF78CCb5984EecfAC2D2F7b592A638f59F243f9',
-  [CHAINS.Hyperspace]: '0xAEF78CCb5984EecfAC2D2F7b592A638f59F243f9',
+  [CHAINS.FilecoinMainnet]: '00000',
+  [CHAINS.Wallaby]: '00000',
+  [CHAINS.Hyperspace]: '0xa999Db46A5df0F8C1ba0dB06593186168F471D24',
 };
 
 export const getSmartContractAddress = (chainId: CHAINS): string => {
