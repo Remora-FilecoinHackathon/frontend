@@ -114,9 +114,9 @@
       },
       {
         "indexed": true,
-        "internalType": "bytes",
+        "internalType": "address",
         "name": "minerActor",
-        "type": "bytes"
+        "type": "address"
       }
     ],
     "name": "BorrowOrder",
@@ -133,9 +133,9 @@
       },
       {
         "indexed": false,
-        "internalType": "string",
+        "internalType": "address",
         "name": "minerActor",
-        "type": "string"
+        "type": "address"
       }
     ],
     "name": "CheckReputation",
@@ -179,6 +179,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "contractAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "MinerMockAPIDeployed",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -210,9 +229,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
+        "internalType": "address",
         "name": "minerActorAddress",
-        "type": "bytes"
+        "type": "address"
       }
     ],
     "name": "checkReputation",
@@ -233,9 +252,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "bytes",
+        "internalType": "address payable",
         "name": "minerActorAddress",
-        "type": "bytes"
+        "type": "address"
       }
     ],
     "name": "createBorrow",
@@ -275,6 +294,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "deployMockMinerActor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -301,9 +327,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
+        "internalType": "address payable",
         "name": "minerActorAddress",
-        "type": "bytes"
+        "type": "address"
       }
     ],
     "name": "isControllingAddress",
@@ -401,6 +427,25 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "ownerToMinerActor",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -461,9 +506,9 @@
     "name": "reputationRequest",
     "outputs": [
       {
-        "internalType": "bytes",
+        "internalType": "address",
         "name": "",
-        "type": "bytes"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -472,9 +517,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
+        "internalType": "address",
         "name": "",
-        "type": "bytes"
+        "type": "address"
       }
     ],
     "name": "reputationResponse",
@@ -491,213 +536,241 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "_owner",
-        "type": "bytes"
+        "internalType": "address",
+        "name": "_lender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_borrower",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_minerActor",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_loanAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rateAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_withdrawInterval",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_end",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
   {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "bytes",
-            "name": "new_beneficiary",
-            "type": "bytes"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bytes",
-                "name": "val",
-                "type": "bytes"
-              },
-              {
-                "internalType": "bool",
-                "name": "neg",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct BigInt",
-            "name": "new_quota",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint64",
-            "name": "new_expiration",
-            "type": "uint64"
-          }
-        ],
-        "internalType": "struct MinerTypes.ChangeBeneficiaryParams",
-        "name": "params",
-        "type": "tuple"
-      }
-    ],
-    "name": "changeBeneficiary",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "inputs": [],
+    "name": "Already_Started",
+    "type": "error"
   },
   {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "addr",
-        "type": "bytes"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "changeOwnerAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "name": "Loan_Already_Repaid",
+    "type": "error"
   },
   {
     "inputs": [],
-    "name": "getAvailableBalance",
-    "outputs": [
+    "name": "Loan_Already_Started",
+    "type": "error"
+  },
+  {
+    "inputs": [
       {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "bytes",
-                "name": "val",
-                "type": "bytes"
-              },
-              {
-                "internalType": "bool",
-                "name": "neg",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct BigInt",
-            "name": "available_balance",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct MinerTypes.GetAvailableBalanceReturn",
+        "internalType": "uint256",
         "name": "",
-        "type": "tuple"
+        "type": "uint256"
       }
     ],
-    "stateMutability": "pure",
-    "type": "function"
+    "name": "Loan_Not_Expired",
+    "type": "error"
   },
   {
     "inputs": [],
-    "name": "getBeneficiary",
+    "name": "Loan_Not_Started",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "Not_Enough_Balance",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "Not_The_Borrower",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "Not_The_Borrower_Or_Lender",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "Not_The_Lender",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "Too_Early",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Wrong_Beneficiary",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Wrong_Owner",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "time",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "paidAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClosedLoan",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "time",
+        "type": "uint256"
+      }
+    ],
+    "name": "FailedPaidRate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "time",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "paidAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "PaidRate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "Received",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "borrower",
     "outputs": [
       {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "bytes",
-                "name": "beneficiary",
-                "type": "bytes"
-              },
-              {
-                "components": [
-                  {
-                    "components": [
-                      {
-                        "internalType": "bytes",
-                        "name": "val",
-                        "type": "bytes"
-                      },
-                      {
-                        "internalType": "bool",
-                        "name": "neg",
-                        "type": "bool"
-                      }
-                    ],
-                    "internalType": "struct BigInt",
-                    "name": "quota",
-                    "type": "tuple"
-                  },
-                  {
-                    "components": [
-                      {
-                        "internalType": "bytes",
-                        "name": "val",
-                        "type": "bytes"
-                      },
-                      {
-                        "internalType": "bool",
-                        "name": "neg",
-                        "type": "bool"
-                      }
-                    ],
-                    "internalType": "struct BigInt",
-                    "name": "used_quota",
-                    "type": "tuple"
-                  },
-                  {
-                    "internalType": "uint64",
-                    "name": "expiration",
-                    "type": "uint64"
-                  }
-                ],
-                "internalType": "struct CommonTypes.BeneficiaryTerm",
-                "name": "term",
-                "type": "tuple"
-              }
-            ],
-            "internalType": "struct CommonTypes.ActiveBeneficiary",
-            "name": "active",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bytes",
-                "name": "new_beneficiary",
-                "type": "bytes"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "bytes",
-                    "name": "val",
-                    "type": "bytes"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "neg",
-                    "type": "bool"
-                  }
-                ],
-                "internalType": "struct BigInt",
-                "name": "new_quota",
-                "type": "tuple"
-              },
-              {
-                "internalType": "uint64",
-                "name": "new_expiration",
-                "type": "uint64"
-              },
-              {
-                "internalType": "bool",
-                "name": "approved_by_beneficiary",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "approved_by_nominee",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct CommonTypes.PendingBeneficiaryChange",
-            "name": "proposed",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct MinerTypes.GetBeneficiaryReturn",
+        "internalType": "address",
         "name": "",
-        "type": "tuple"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -705,24 +778,12 @@
   },
   {
     "inputs": [],
-    "name": "getOwner",
+    "name": "canTerminate",
     "outputs": [
       {
-        "components": [
-          {
-            "internalType": "bytes",
-            "name": "owner",
-            "type": "bytes"
-          },
-          {
-            "internalType": "bytes",
-            "name": "proposed",
-            "type": "bytes"
-          }
-        ],
-        "internalType": "struct MinerTypes.GetOwnerReturn",
+        "internalType": "bool",
         "name": "",
-        "type": "tuple"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -730,19 +791,19 @@
   },
   {
     "inputs": [],
-    "name": "getSectorSize",
+    "name": "closeLoan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "end",
     "outputs": [
       {
-        "components": [
-          {
-            "internalType": "uint64",
-            "name": "sector_size",
-            "type": "uint64"
-          }
-        ],
-        "internalType": "struct MinerTypes.GetSectorSizeReturn",
+        "internalType": "uint256",
         "name": "",
-        "type": "tuple"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -750,46 +811,120 @@
   },
   {
     "inputs": [],
-    "name": "getVestingFunds",
+    "name": "lastWithdraw",
     "outputs": [
       {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "int64",
-                "name": "epoch",
-                "type": "int64"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "bytes",
-                    "name": "val",
-                    "type": "bytes"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "neg",
-                    "type": "bool"
-                  }
-                ],
-                "internalType": "struct BigInt",
-                "name": "amount",
-                "type": "tuple"
-              }
-            ],
-            "internalType": "struct CommonTypes.VestingFunds[]",
-            "name": "vesting_funds",
-            "type": "tuple[]"
-          }
-        ],
-        "internalType": "struct MinerTypes.GetVestingFundsReturn",
+        "internalType": "uint256",
         "name": "",
-        "type": "tuple"
+        "type": "uint256"
       }
     ],
-    "stateMutability": "pure",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lender",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "loanAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "loanPaidAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minerActor",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nextWithdraw",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rateAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "repay",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "startLoan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "started",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -798,51 +933,55 @@
         "components": [
           {
             "internalType": "bytes",
-            "name": "addr",
+            "name": "amount_requested",
             "type": "bytes"
           }
         ],
-        "internalType": "struct MinerTypes.IsControllingAddressParam",
-        "name": "params",
+        "internalType": "struct MinerTypes.WithdrawBalanceParams",
+        "name": "balanceParams",
         "type": "tuple"
       }
     ],
-    "name": "isControllingAddress",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bool",
-            "name": "is_controlling",
-            "type": "bool"
-          }
-        ],
-        "internalType": "struct MinerTypes.IsControllingAddressReturn",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "transferFromMinerActor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "addr",
-        "type": "bytes"
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "mockSetOwner",
+    "name": "transferToMinerActor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "withdrawBalance",
+    "name": "withdrawBeforLoanStarts",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawInterval",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]
