@@ -21,6 +21,7 @@ import { Button, Eclipse, Fil, Heading, Input, Text } from 'components/ui';
 import StackedBlock from 'components/stackedBlock';
 import { ethers } from 'ethers';
 import ActivePositionModule from 'components/modules/ActivePositionModule';
+import Toggle from 'components/toggle/Toggle';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -29,6 +30,7 @@ const DealWrapper = styled.div`
 export default function Active() {
   const [positions, setPositions] = useState();
   const [isSelectedLoanKey, setisSelectedLoanKey] = useState('');
+  const [selectedOption, setSelectedOption] = useState('lenders');
 
   const { account } = useSDK();
 
@@ -123,10 +125,12 @@ export default function Active() {
         <div style={{ textAlign: 'center' }}>
           <HeadingWrapper>
             <Heading size="sm">Position Manager</Heading>
-            <Text color="secondary" size="xs">
-              Close Loan, withdraw and see active loans!
-            </Text>
           </HeadingWrapper>
+          <Toggle
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+          />
+
           {positions?.map((position) => (
             <ActivePositionModule
               key={position.loanKey}
@@ -139,45 +143,78 @@ export default function Active() {
             />
           ))}
           <ConnectionError />
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              marginBottom: '20px',
-            }}
-          >
-            <Button size={'md'} type="submit" style={{ marginLeft: '10px' }}>
-              Withdraw
-            </Button>
-            <Button
-              size={'md'}
-              variant={'outlined'}
-              type="submit"
-              style={{ marginRight: '10px' }}
+
+          {selectedOption === 'lender' ? (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                  marginBottom: '20px',
+                }}
+              >
+                <Button
+                  size={'md'}
+                  type="submit"
+                  style={{ marginLeft: '10px' }}
+                >
+                  Withdraw
+                </Button>
+                <Button
+                  size={'md'}
+                  variant={'outlined'}
+                  type="submit"
+                  style={{ marginRight: '10px' }}
+                >
+                  Close Loan
+                </Button>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                }}
+              >
+                <Button
+                  size={'md'}
+                  type="submit"
+                  style={{ marginLeft: '10px' }}
+                >
+                  Call Repay
+                </Button>
+                <Button
+                  size={'md'}
+                  variant={'outlined'}
+                  type="submit"
+                  style={{ marginRight: '10px' }}
+                >
+                  Start Loan
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+              }}
             >
-              Close Loan
-            </Button>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-            }}
-          >
-            <Button size={'md'} type="submit" style={{ marginLeft: '10px' }}>
-              Call Repay
-            </Button>
-            <Button
-              size={'md'}
-              variant={'outlined'}
-              type="submit"
-              style={{ marginRight: '10px' }}
-            >
-              Start Loan
-            </Button>
-          </div>
+              <Button size={'md'} type="submit" style={{ marginLeft: '10px' }}>
+                Call Repay
+              </Button>
+              <Button
+                size={'md'}
+                variant={'outlined'}
+                type="submit"
+                style={{ marginRight: '10px' }}
+              >
+                Start Loan
+              </Button>
+            </div>
+          )}
         </div>
       </>
       <BackgroundWrapper>

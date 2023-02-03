@@ -30,6 +30,7 @@ import StackedBlock from 'components/stackedBlock';
 import AccordianUi from 'components/accordian-ui';
 import { ethers } from 'ethers';
 import { mainContractAddress } from 'config/mainContractAddress';
+import { isResSent } from 'next/dist/shared/lib/utils';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -150,20 +151,30 @@ export default function Home() {
 
   const handleReputationSubmit = async (event) => {
     event.preventDefault();
-    const backendLambdaAddress = '0x314d0253dC98d53F334Fc4c9Efc3395a918A719F';
+    const backendAddress = '0x314d0253dC98d53F334Fc4c9Efc3395a918A719F';
     if (account && mockMinerActor) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(
-        backendLambdaAddress,
+        backendAddress,
         LendingManagerABI,
         signer,
       );
+      const contractFrontEnd = new ethers.Contract(
+        mainContractAddress,
+        LendingManagerABI,
+        provider,
+      );
       const tx = await contract.checkReputation(mockMinerActor);
       await tx.wait();
-      contract.on('checkReputation', (e) => {
-        console.log(`reputation score is ${e}`);
-      });
+      contractFrontEnd.on(
+        'ReputationReceived',
+        (requestID, response, miner) => {
+          console.log(
+            `reputation${response}, miner:${miner}, requestID:${requestID}`,
+          );
+        },
+      );
       setRepIsSuccess(true);
     } else {
       openModal();
@@ -174,14 +185,16 @@ export default function Home() {
     | FormEventHandler<HTMLFormElement>
     | undefined = async (event: FormEvent) => {
     event.preventDefault();
+    console.log(`Loan Key:${isSelectedLoanKey},
+      Amount: ${ethers.utils.parseEther(amount)},
+      Mock Miner Actor: ${mockMinerActor}`);
     var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
     if (account && repIsSuccess) {
       contractWeb3?.createBorrow(
-        isSelectedLoanKey._hex,
+        isSelectedLoanKey,
         ethers.utils.parseEther(amount),
         mockMinerActor,
         {
-          value: ethers.utils.parseEther(amount),
           maxPriorityFeePerGas: priorityFee.result,
         },
       );
