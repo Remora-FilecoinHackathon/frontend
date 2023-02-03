@@ -5,6 +5,7 @@ import {
   useLendingManagerContractWeb3,
   useLendingManagerContractRPC,
 } from '../hooks';
+
 import LendingManagerABI from '../abi/LendingManager.abi.json';
 import { useSDK } from 'sdk/hooks';
 import ConnectionError from 'components/connectionError';
@@ -17,7 +18,7 @@ import {
   FormEventHandler,
   FormEvent,
 } from 'react';
-import { trackEvent, MatomoEventType } from '@lidofinance/analytics-matomo';
+
 import { Heading, Text, Button, Eclipse, Input, Fil } from '../components/ui';
 
 import { useModal } from '../hooks';
@@ -25,38 +26,31 @@ import { useModal } from '../hooks';
 import { MODAL } from '../providers';
 import PositionModule from 'components/modules/PositionModule';
 import StackedBlock from 'components/stackedBlock';
-import { useContractSWR } from 'sdk/hooks/useContractSWR';
+
 import AccordianUi from 'components/accordian-ui';
 import { ethers } from 'ethers';
-import { position } from '@chakra-ui/react';
+import { mainContractAddress } from 'config/mainContractAddress';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
 `;
 
 export default function Home() {
-  const [newContract, setNewContract] = useState(false);
-  const [renderNewDiv, setRenderNewDiv] = useState(false);
-  const [repIsSuccess, setRepIsSuccess] = useState(true);
-  const [amount, setAmount] = useState('');
   const { account } = useSDK();
+
+  const [repIsSuccess, setRepIsSuccess] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [mockMinerActor, setMockMinerActor] = useState(null);
+
   const [isVisible, setIsVisible] = useState(false);
   const [positions, setPositions] = useState();
-  const [isSelected, setIsSelected] = useState('');
-  const [submit, setSubmit] = useState();
+  const [isSelectedLoanKey, setIsSelectedLoanKey] = useState('');
 
-  useEffect(() => {
-    if (newContract) {
-      setRenderNewDiv(true);
-    }
-  }, [newContract]);
+  const [submit, setSubmit] = useState();
 
   const { openModal } = useModal(MODAL.connect);
 
-  const handleAmountChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setAmount(event.currentTarget.value as string);
-  };
-
+  /* Wrapper Styles */
   const DecoratorLabelStyle = styled.span`
     display: inline-block;
     font-size: 30px;
@@ -84,62 +78,7 @@ export default function Home() {
       }
     }
   `;
-
-  useEffect(() => {
-    (async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(
-        '0xa999Db46A5df0F8C1ba0dB06593186168F471D24',
-        LendingManagerABI,
-        provider,
-      );
-      //use getLoanKeyNumber function when luca finishes it
-      const loanKeysTotalNumber = ['key'];
-      const positionsArray = [];
-      for (let i = 0; i < loanKeysTotalNumber.length; i++) {
-        const loanKey = await contract.loanKeys([i]);
-        const position = await contract.positions(loanKey._hex);
-        const positionFormatted = {
-          loanKey: loanKey,
-          lender: position.lender,
-          availableAmount: ethers.utils.formatEther(
-            position.availableAmount.toString(),
-          ),
-
-          interestRate: position.interestRate.toString() / 100,
-          endDate: position.endTimestamp.toString(),
-        };
-
-        positionsArray.push(positionFormatted);
-      }
-      setPositions(positionsArray);
-    })();
-  }, [account]);
-
-  const handleDeployMockMinerActor:
-    | FormEventHandler<HTMLFormElement>
-    | undefined = (event: FormEvent) => {
-    event.preventDefault();
-    if (account) {
-      // Do i pass account of wallet to reputation?
-      // contractWeb3.checkReputation(account);
-    } else {
-      openModal();
-    }
-  };
-
-  const handleReputationSubmit:
-    | FormEventHandler<HTMLFormElement>
-    | undefined = (event: FormEvent) => {
-    event.preventDefault();
-    if (account) {
-      // Do i pass account of wallet to reputation?
-      // contractWeb3.checkReputation(account);
-    } else {
-      openModal();
-    }
-  };
-
+  /* Providers for reading and writing to contract */
   const contractWeb3 = useLendingManagerContractWeb3();
 
   const ENDPOINT_ADDRESS = 'https://api.hyperspace.node.glif.io/rpc/v1';
@@ -154,19 +93,93 @@ export default function Home() {
     return res.data;
   }
 
-  const handleBorrowSubmit:
+  //  Reading contract to display positions currently available for borrowers
+  useEffect(() => {
+    (async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(
+        mainContractAddress,
+        LendingManagerABI,
+        provider,
+      );
+      const loanKeysTotalNumber = (
+        await contract.getLoanKeysLength()
+      ).toNumber();
+      const positionsArray = [];
+      if (loanKeysTotalNumber > 0) {
+        for (let i = 0; i < loanKeysTotalNumber; i++) {
+          const loanKey = await contract.loanKeys([i]);
+          const position = await contract.positions(loanKey._hex);
+          const positionFormatted = {
+            loanKey: loanKey,
+            lender: position.lender,
+            availableAmount: ethers.utils.formatEther(
+              position.availableAmount.toString(),
+            ),
+
+            interestRate: position.interestRate.toString() / 100,
+            endDate: position.endTimestamp.toString(),
+          };
+          positionsArray.push(positionFormatted);
+        }
+        setPositions(positionsArray);
+      }
+    })();
+  }, [account]);
+
+  const handleDeployMockMinerActor = (event: {
+    preventDefault: () => void;
+  }) => {
+    event.preventDefault();
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const contract = new ethers.Contract(
+      mainContractAddress,
+      LendingManagerABI,
+      provider,
+    );
+    if (account) {
+      contractWeb3?.deployMockMinerActor();
+      contract.on('MinerMockAPIDeployed', (address, msg) => {
+        console.log(`deployed Mock Miner: ${address}`);
+        setMockMinerActor(address);
+      });
+    } else {
+      openModal();
+    }
+  };
+
+  const handleReputationSubmit = async (event) => {
+    event.preventDefault();
+    const backendLambdaAddress = '0x314d0253dC98d53F334Fc4c9Efc3395a918A719F';
+    if (account && mockMinerActor) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        backendLambdaAddress,
+        LendingManagerABI,
+        signer,
+      );
+      const tx = await contract.checkReputation(mockMinerActor);
+      await tx.wait();
+      contract.on('checkReputation', (e) => {
+        console.log(`reputation score is ${e}`);
+      });
+      setRepIsSuccess(true);
+    } else {
+      openModal();
+    }
+  };
+
+  const handleCreateBorrowSubmit:
     | FormEventHandler<HTMLFormElement>
     | undefined = async (event: FormEvent) => {
     event.preventDefault();
     var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
-    if (account) {
+    if (account && repIsSuccess) {
       contractWeb3?.createBorrow(
-        //loan key
-        isSelected,
-        // amount
+        isSelectedLoanKey._hex,
         ethers.utils.parseEther(amount),
-        //miner acttor?
-
+        mockMinerActor,
         {
           value: ethers.utils.parseEther(amount),
           maxPriorityFeePerGas: priorityFee.result,
@@ -174,12 +187,17 @@ export default function Home() {
       );
     }
     setAmount('');
-    setIsSelected('');
+    setIsSelectedLoanKey('');
   };
+
   // handling what contract is selected
-  const handleSelected = (id: string) => {
-    setIsSelected(id);
-    console.log(isSelected);
+  const handleSelectedLoanKey = (id: string) => {
+    setIsSelectedLoanKey(id);
+    console.log(isSelectedLoanKey);
+  };
+
+  const handleAmountChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setAmount(event.currentTarget.value as string);
   };
 
   // handling fade in animations
@@ -202,26 +220,30 @@ export default function Home() {
           <form
             action=""
             method="post"
-            onSubmit={handleReputationSubmit}
             style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}
           >
             <div style={{ textAlign: 'center' }}>
               <HeadingWrapper>
-                <Heading size="sm">Step 1: Deploy Contract</Heading>
+                <Heading size="sm">Step 1: Deploy Mock Contract</Heading>
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation
                 </Text>
               </HeadingWrapper>
               <Button
                 fullwidth
-                type="submit"
                 variant={'outlined'}
+                onClick={handleDeployMockMinerActor}
                 style={{ marginBottom: '40px' }}
               >
                 Deploy
               </Button>
 
-              <HeadingWrapper>
+              <HeadingWrapper
+                style={{
+                  cursor: mockMinerActor ? 'pointer' : 'not-allowed',
+                  opacity: mockMinerActor ? 1 : 0.5,
+                }}
+              >
                 <Heading size="sm">Step 2: Check Reputation</Heading>
                 <Text color="secondary" size="xs">
                   Check your reputation and you will be able to select which
@@ -229,7 +251,14 @@ export default function Home() {
                 </Text>
               </HeadingWrapper>
 
-              <Button fullwidth type="submit">
+              <Button
+                fullwidth
+                style={{
+                  cursor: mockMinerActor ? 'pointer' : 'not-allowed',
+                  opacity: mockMinerActor ? 1 : 0.5,
+                }}
+                onClick={handleReputationSubmit}
+              >
                 Check
               </Button>
             </div>
@@ -240,7 +269,7 @@ export default function Home() {
           <form
             action=""
             method="post"
-            onSubmit={handleBorrowSubmit}
+            onSubmit={handleCreateBorrowSubmit}
             style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}
           >
             <div style={{ textAlign: 'center' }}>
@@ -299,8 +328,8 @@ export default function Home() {
                   liquidity={position.availableAmount}
                   interestRate={position.interestRate}
                   endDate={position.endDate}
-                  handleSelected={handleSelected}
-                  isSelected={isSelected}
+                  handleSelectedLoanKey={handleSelectedLoanKey}
+                  isSelectedLoanKey={isSelectedLoanKey}
                 />
               ))}
             </DealWrapper>

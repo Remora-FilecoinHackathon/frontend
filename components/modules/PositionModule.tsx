@@ -8,18 +8,18 @@ const PositionModule = ({
   interestRate,
   endDate,
   loanKey,
-  handleSelected,
-  isSelected,
+  handleSelectedLoanKey,
+  isSelectedLoanKey,
 }) => {
   const toggleSelection = () => {
-    handleSelected(isSelected === loanKey ? '' : loanKey);
+    handleSelectedLoanKey(isSelectedLoanKey === loanKey ? '' : loanKey);
   };
   return (
     <NormalBlock
       onClick={+moment() < endDate ? toggleSelection : undefined}
       style={{
         border:
-          isSelected === loanKey
+          isSelectedLoanKey === loanKey
             ? '1px solid var(--secondary-color)'
             : '1px solid #353535',
         cursor: +moment() < endDate ? 'pointer' : 'not-allowed',

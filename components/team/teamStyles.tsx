@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const HeroStyles = styled.div`
+export const TeamStyles = styled.div`
   padding-top: 18px;
   padding-bottom: 18px;
   display: flex;

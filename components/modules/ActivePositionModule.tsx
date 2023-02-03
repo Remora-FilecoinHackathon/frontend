@@ -8,15 +8,15 @@ const ActivePositionModule = ({
   interestRate,
   endDate,
   loanKey,
-  handleSelected,
-  isSelected,
+  handleSelectedLoankey,
+  isSelectedLoanKey,
 }) => {
   return (
     <StackedBlock
-      onClick={() => handleSelected(loanKey)}
+      onClick={() => handleSelectedLoanKey(loanKey)}
       style={{
         border:
-          isSelected === loanKey
+          isSelectedLoanKey === loanKey
             ? '1px solid var(--secondary-color)'
             : '1px solid #353535',
         cursor: 'pointer',

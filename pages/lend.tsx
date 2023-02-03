@@ -122,9 +122,11 @@ export default function Home() {
           maxPriorityFeePerGas: priorityFee.result,
         },
       );
-      setAmount('');
-      setInterestValue('');
-      setEndDate(new Date());
+      if (contractWeb3) {
+        setAmount('');
+        setInterestValue('');
+        setEndDate(new Date());
+      }
     } else {
       openModal();
     }

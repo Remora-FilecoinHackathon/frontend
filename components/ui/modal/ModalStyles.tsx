@@ -1,7 +1,7 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-import { Close, ArrowBack } from '../icons'
-import { ButtonIcon } from '../button'
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { Close, ArrowBack } from '../icons';
+import { ButtonIcon } from '../button';
 
 export const ModalStyle = styled.div<{ $center: boolean }>`
   ${({
@@ -17,7 +17,7 @@ export const ModalStyle = styled.div<{ $center: boolean }>`
     border-radius: ${borderRadiusesMap.xl}px;
     box-shadow: ${boxShadows.xxl} ${colors.shadowDark};
   `}
-`
+`;
 
 export const ModalBaseStyle = styled.div`
   ${({ theme: { colors } }) => css`
@@ -27,10 +27,10 @@ export const ModalBaseStyle = styled.div`
     position: relative;
     z-index: 1;
   `}
-`
+`;
 
 export const ModalHeaderStyle = styled.div<{
-  $short: boolean
+  $short: boolean;
 }>`
   ${({ theme: { spaceMap, fontSizesMap, mediaQueries }, $short }) => css`
     display: flex;
@@ -45,13 +45,13 @@ export const ModalHeaderStyle = styled.div<{
       padding: ${spaceMap.lg}px;
     }
   `}
-`
+`;
 
 export const ModalTitleStyle = styled.div<{
-  $center: boolean
-  $withTitleIcon: boolean
-  $withCloseButton: boolean
-  $withBackButton: boolean
+  $center: boolean;
+  $withTitleIcon: boolean;
+  $withCloseButton: boolean;
+  $withBackButton: boolean;
 }>`
   ${({
     theme: { fontSizesMap, spaceMap, mediaQueries },
@@ -75,10 +75,10 @@ export const ModalTitleStyle = styled.div<{
       padding-right: ${spaceMap.xs}px;
     }
   `}
-`
+`;
 
 export const ModalTitleIconStyle = styled.div<{
-  $center: boolean
+  $center: boolean;
 }>`
   ${({ theme: { spaceMap }, $center }) => css`
     display: ${$center ? 'flex' : 'block'};
@@ -86,11 +86,11 @@ export const ModalTitleIconStyle = styled.div<{
     line-height: 0.7;
     margin-bottom: ${spaceMap.md}px;
   `}
-`
+`;
 
 export const ModalTitleTextStyle = styled.div`
   margin: ${({ theme }) => theme.spaceMap.xs}px 0;
-`
+`;
 
 export const ModalSubtitleStyle = styled.div`
   ${({ theme: { colors, fontSizesMap, spaceMap, mediaQueries } }) => css`
@@ -106,7 +106,7 @@ export const ModalSubtitleStyle = styled.div`
       padding-right: ${spaceMap.xl}px;
     }
   `}
-`
+`;
 
 export const ModalContentStyle = styled.div`
   ${({ theme: { spaceMap, mediaQueries } }) => css`
@@ -116,7 +116,7 @@ export const ModalContentStyle = styled.div`
       padding: 0 ${spaceMap.lg}px ${spaceMap.lg}px;
     }
   `}
-`
+`;
 
 export const ModalCloseStyle = styled(ButtonIcon).attrs({
   icon: <Close />,
@@ -128,7 +128,7 @@ export const ModalCloseStyle = styled(ButtonIcon).attrs({
   color: var(--collective-color-textSecondary);
   flex-shrink: 0;
   border-radius: 50%;
-`
+`;
 
 export const ModalBackStyle = styled(ButtonIcon).attrs({
   icon: <ArrowBack />,
@@ -143,4 +143,4 @@ export const ModalBackStyle = styled(ButtonIcon).attrs({
     border-radius: 50%;
     background: transparent !important;
   `}
-`
+`;

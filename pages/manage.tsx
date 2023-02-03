@@ -1,5 +1,6 @@
 import { FormEventHandler, FormEvent, useEffect, useState } from 'react';
 import Layout from 'components/layout';
+import { mainContractAddress } from 'config/mainContractAddress';
 
 import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
@@ -27,20 +28,12 @@ const DealWrapper = styled.div`
 
 export default function Active() {
   const [positions, setPositions] = useState();
-  const [isSelected, setIsSelected] = useState('');
+  const [isSelectedLoanKey, setisSelectedLoanKey] = useState('');
 
   const { account } = useSDK();
 
   const contractRPC = useLendingManagerContractRPC();
   const contractWeb3 = useLendingManagerContractWeb3();
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
-    event: FormEvent,
-  ) => {
-    event.preventDefault();
-    // close Loan
-    // contractWeb3.closeLoan({ value: stringToEther(value) });
-  };
 
   const { openModal } = useModal(MODAL.connect);
 
@@ -73,44 +66,54 @@ export default function Active() {
   `;
 
   // handling what contract is selected
-  const handleSelected = (id: string) => {
-    setIsSelected(id);
-    console.log(isSelected);
+  const handleSelectedLoanKey = (id: string) => {
+    setisSelectedLoanKey(id);
+    console.log(isSelectedLoanKey);
   };
 
   useEffect(() => {
     (async () => {
-      await window.ethereum.enable();
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
-        '0xAEF78CCb5984EecfAC2D2F7b592A638f59F243f9',
+        mainContractAddress,
         LendingManagerAbi,
         provider,
       );
-      const loanKeysTotalNumber = ['key', 'key'];
-      const positionsArray = [];
-      for (let i = 0; i < loanKeysTotalNumber.length; i++) {
-        const loanKey = await contract.loanKeys([i]);
-        const position = await contract.positions(loanKey._hex);
-        const positionFormatted = {
-          loanKey: loanKey,
-          lender: position.lender,
-          availableAmount: ethers.utils.formatEther(
-            position.availableAmount.toString(),
-          ),
 
-          interestRate: position.interestRate.toString() / 100,
-          endDate: position.endTimestamp.toString(),
-        };
+      const loanKeysTotalNumber = (
+        await contract.getLoanKeysLength()
+      ).toNumber();
+      if (loanKeysTotalNumber > 0) {
+        const positionsArray = [];
+        for (let i = 0; i < loanKeysTotalNumber; i++) {
+          const loanKey = await contract.loanKeys([i]);
+          const position = await contract.positions(loanKey._hex);
+          const positionFormatted = {
+            loanKey: loanKey,
+            lender: position.lender,
+            availableAmount: ethers.utils.formatEther(
+              position.availableAmount.toString(),
+            ),
 
-        if (account === positionFormatted.lender) {
-          positionsArray.push(positionFormatted);
+            interestRate: position.interestRate.toString() / 100,
+            endDate: position.endTimestamp.toString(),
+          };
+          if (account === positionFormatted.lender) {
+            positionsArray.push(positionFormatted);
+          }
         }
+        setPositions(positionsArray);
       }
-      setPositions(positionsArray);
     })();
   }, [account]);
 
+  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
+    event: FormEvent,
+  ) => {
+    event.preventDefault();
+    // close Loan
+    contractWeb3.closeLoan();
+  };
   return (
     <Layout>
       <Head>
@@ -131,8 +134,8 @@ export default function Active() {
               liquidity={position.availableAmount}
               interestRate={position.interestRate}
               endDate={position.endDate}
-              handleSelected={handleSelected}
-              isSelected={isSelected}
+              handleSelectedLoankey={handleSelectedLoanKey}
+              isSelectedLoanKey={isSelectedLoanKey}
             />
           ))}
           <ConnectionError />
@@ -140,7 +143,8 @@ export default function Active() {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'space-evenly',
+              marginBottom: '20px',
             }}
           >
             <Button size={'md'} type="submit" style={{ marginLeft: '10px' }}>
@@ -153,6 +157,25 @@ export default function Active() {
               style={{ marginRight: '10px' }}
             >
               Close Loan
+            </Button>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <Button size={'md'} type="submit" style={{ marginLeft: '10px' }}>
+              Call Repay
+            </Button>
+            <Button
+              size={'md'}
+              variant={'outlined'}
+              type="submit"
+              style={{ marginRight: '10px' }}
+            >
+              Start Loan
             </Button>
           </div>
         </div>
