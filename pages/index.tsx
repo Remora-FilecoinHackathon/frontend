@@ -11,7 +11,7 @@ export default function Home() {
         <title>Remora - Uncollateralized Lending</title>
       </Head>
       <Hero />
-      <Team />
+      {/* <Team /> */}
     </LayoutLandingPage>
   );
 }
