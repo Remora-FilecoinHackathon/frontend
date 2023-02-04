@@ -19,7 +19,15 @@ import {
   FormEvent,
 } from 'react';
 
-import { Heading, Text, Button, Eclipse, Input, Fil } from '../components/ui';
+import {
+  Heading,
+  Text,
+  Button,
+  Eclipse,
+  Input,
+  Fil,
+  Loader,
+} from '../components/ui';
 
 import { useModal } from '../hooks';
 
@@ -43,6 +51,7 @@ export default function Home() {
   const [amount, setAmount] = useState('');
   const [mockMinerActor, setMockMinerActor] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [positions, setPositions] = useState();
   const [isSelectedLoanKey, setIsSelectedLoanKey] = useState('');
@@ -138,12 +147,20 @@ export default function Home() {
       LendingManagerABI,
       provider,
     );
+
     if (account) {
-      contractWeb3?.deployMockMinerActor();
-      contract.on('MinerMockAPIDeployed', (address, msg) => {
-        console.log(`deployed Mock Miner: ${address}`);
-        setMockMinerActor(address);
-      });
+      try {
+        contractWeb3?.deployMockMinerActor();
+        setIsLoading(true);
+        contract.on('MinerMockAPIDeployed', (address, msg) => {
+          console.log(`deployed Mock Miner: ${address}`);
+          setMockMinerActor(address);
+          setIsLoading(false);
+        });
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
     } else {
       openModal();
     }
@@ -153,29 +170,36 @@ export default function Home() {
     event.preventDefault();
     const backendAddress = '0x314d0253dC98d53F334Fc4c9Efc3395a918A719F';
     if (account && mockMinerActor) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        backendAddress,
-        LendingManagerABI,
-        signer,
-      );
-      const contractFrontEnd = new ethers.Contract(
-        mainContractAddress,
-        LendingManagerABI,
-        provider,
-      );
-      const tx = await contract.checkReputation(mockMinerActor);
-      await tx.wait();
-      contractFrontEnd.on(
-        'ReputationReceived',
-        (requestID, response, miner) => {
-          console.log(
-            `reputation${response}, miner:${miner}, requestID:${requestID}`,
-          );
-        },
-      );
-      setRepIsSuccess(true);
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          backendAddress,
+          LendingManagerABI,
+          signer,
+        );
+        const contractFrontEnd = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          provider,
+        );
+        const tx = await contract.checkReputation(mockMinerActor);
+        setIsLoading(true);
+        await tx.wait();
+        contractFrontEnd.on(
+          'ReputationReceived',
+          (requestID, response, miner) => {
+            console.log(
+              `reputation${response}, miner:${miner}, requestID:${requestID}`,
+            );
+            setRepIsSuccess(true);
+            setIsLoading(false);
+          },
+        );
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
     } else {
       openModal();
     }
@@ -189,15 +213,28 @@ export default function Home() {
       Amount: ${ethers.utils.parseEther(amount)},
       Mock Miner Actor: ${mockMinerActor}`);
     var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
-    if (account && repIsSuccess) {
-      contractWeb3?.createBorrow(
-        isSelectedLoanKey,
-        ethers.utils.parseEther(amount),
-        mockMinerActor,
-        {
-          maxPriorityFeePerGas: priorityFee.result,
-        },
-      );
+    if (account) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          signer,
+        );
+        contract.createBorrow(
+          isSelectedLoanKey,
+          ethers.utils.parseEther(amount),
+          mockMinerActor,
+          {
+            maxPriorityFeePerGas: priorityFee.result,
+            gasLimit: 1000000000, // set manual gas limit
+          },
+        );
+        await tx.wait();
+      } catch (error) {
+        console.log(error);
+      }
     }
     setAmount('');
     setIsSelectedLoanKey('');
@@ -241,10 +278,12 @@ export default function Home() {
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation
                 </Text>
+                {isLoading ? <Loader color="secondary" /> : null}
               </HeadingWrapper>
               <Button
                 fullwidth
                 variant={'outlined'}
+                color={!isLoading ? 'primary' : 'secondary'}
                 onClick={handleDeployMockMinerActor}
                 style={{ marginBottom: '40px' }}
               >
@@ -270,6 +309,7 @@ export default function Home() {
                   cursor: mockMinerActor ? 'pointer' : 'not-allowed',
                   opacity: mockMinerActor ? 1 : 0.5,
                 }}
+                color={!isLoading ? 'primary' : 'secondary'}
                 onClick={handleReputationSubmit}
               >
                 Check

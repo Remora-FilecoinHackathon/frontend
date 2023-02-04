@@ -1,6 +1,6 @@
 # Remora
 
-The template is based on [Lido Frontend template](https://github.com/lidofinance/lido-frontend-template) and has been adapted for Filecoin FEVM, supports both Wallaby and Hyperspace testnets
+
 
 ### Pre-requisites
 

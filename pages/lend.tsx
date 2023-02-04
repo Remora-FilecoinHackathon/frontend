@@ -113,6 +113,10 @@ export default function Home() {
   ) => {
     event.preventDefault();
     var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+    console.log(`End Date: ${endDate._d.getTime()},
+    Interest Value: ${parseFloat(
+      interestValue * 100,
+    )}, Amount: ${ethers.utils.parseEther(amount)}`);
     if (account) {
       contractWeb3?.createLendingPosition(
         endDate._d.getTime(),
