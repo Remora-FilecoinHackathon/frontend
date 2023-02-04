@@ -5,7 +5,7 @@ export const SMARTCONTRACT_BY_NETWORK: {
 } = {
   [CHAINS.FilecoinMainnet]: '00000',
   [CHAINS.Wallaby]: '00000',
-  [CHAINS.Hyperspace]: '0xbCD7942E4016584b8a285BC2d8914c3B3d857f19',
+  [CHAINS.Hyperspace]: '0x6B362d0a81bECe92f402D256bcA797885bEA1336',
 };
 
 export const getSmartContractAddress = (chainId: CHAINS): string => {

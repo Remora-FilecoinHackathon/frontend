@@ -149,7 +149,7 @@ export default function Home() {
           LendingManagerABI,
           provider,
         );
-        contract.on('LenderPosition', async function (duration) {
+        await contract.on('LenderPosition', async function (duration) {
           setIsLoading(false);
         });
       } catch (error) {

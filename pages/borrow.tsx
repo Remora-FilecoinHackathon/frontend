@@ -49,7 +49,9 @@ export default function Home() {
 
   const [repIsSuccess, setRepIsSuccess] = useState(false);
   const [amount, setAmount] = useState('');
-  const [mockMinerActor, setMockMinerActor] = useState(null);
+  // const [mockMinerActor, setMockMinerActor] = useState(
+  //   '0xB45F0Fe59cE1179b236eaBdf6b05Efd2613C5798'
+  // );
 
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -144,7 +146,7 @@ export default function Home() {
     })();
   }, [account]);
 
-  const handleDeployMockMinerActor = (event: {
+  const handleDeployMockMinerActor = async (event: {
     preventDefault: () => void;
   }) => {
     event.preventDefault();
@@ -157,13 +159,23 @@ export default function Home() {
 
     if (account) {
       try {
-        contractWeb3?.deployMockMinerActor();
+        let tx = await contractWeb3?.deployMockMinerActor();
         setIsLoading(true);
-        contract.on('MinerMockAPIDeployed', (address, msg) => {
-          console.log(`deployed Mock Miner: ${address}`);
-          setMockMinerActor(address);
-          setIsLoading(false);
-        });
+        await tx?.wait();
+        // contract.on('MinerMockAPIDeployed', (address, msg) => {
+        //   console.log(`deployed Mock Miner: ${address}`);
+        //   setMockMinerActor(address);
+        //   setIsLoading(false);
+        // });
+        var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+        const MINER_ADDRESS: any = await contractWeb3?.ownerToMinerActor(
+          account,
+          {
+            maxPriorityFeePerGas: priorityFee.result,
+          },
+        );
+        console.log(MINER_ADDRESS);
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -175,24 +187,23 @@ export default function Home() {
 
   const handleReputationSubmit = async (event) => {
     event.preventDefault();
-    if (account && mockMinerActor) {
+    if (account) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(
-          mainContractAddress,
-          LendingManagerABI,
-          signer,
-        );
-        const tx = await contract.checkReputation(mockMinerActor);
-        setIsLoading(true);
-        await tx.wait();
-        contract.on('ReputationReceived', async function (id, response, miner) {
-          console.log('**** EVENT RECEIVED ****');
-          console.log(id, response, miner);
-          console.log(response);
-          setRepIsSuccess(true);
-        });
+        // const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // const signer = provider.getSigner();
+        // const contract = new ethers.Contract(
+        //   mainContractAddress,
+        //   LendingManagerABI,
+        //   signer,
+        // );
+        // const tx = await contract.checkReputation(mockMinerActor);
+        // setIsLoading(true);
+        // await tx.wait();
+        // contract.on('ReputationReceived', async function (id, response, miner) {
+        //   console.log('**** REPUTATION EVENT RECEIVED ****');
+        //   console.log(id, response, miner);
+        //   console.log(response);
+        setRepIsSuccess(true);
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -206,10 +217,7 @@ export default function Home() {
     | FormEventHandler<HTMLFormElement>
     | undefined = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(`Loan Key:${isSelectedLoanKey._hex},
-      Amount: ${amount},
-      Mock Miner Actor: ${mockMinerActor}`);
-    var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+
     if (account) {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -219,10 +227,15 @@ export default function Home() {
           LendingManagerABI,
           signer,
         );
-        contract.createBorrow(
-          isSelectedLoanKey._hex,
+        //   console.log(`Loan Key:${isSelectedLoanKey},
+        // Amount: ${amount},
+        // Mock Miner Actor: ${'0xB45F0Fe59cE1179b236eaBdf6b05Efd2613C5798'}`);
+        var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+
+        await contract.createBorrow(
+          isSelectedLoanKey,
           ethers.utils.parseEther(amount),
-          mockMinerActor,
+          '0x446DBaa702F3461585a308327aC50e4cCb4f3Bb8',
           {
             maxPriorityFeePerGas: priorityFee.result,
           },
@@ -275,6 +288,7 @@ export default function Home() {
               }
             >
               <HeadingWrapper>
+                {/* <p>{mockMinerActor}</p> */}
                 <Heading size="sm">Step 1: Deploy Mock Contract</Heading>
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation
@@ -293,10 +307,10 @@ export default function Home() {
               </Button>
 
               <HeadingWrapper
-                style={{
-                  cursor: mockMinerActor ? 'pointer' : 'not-allowed',
-                  opacity: mockMinerActor ? 1 : 0.5,
-                }}
+              // style={{
+              //   cursor: mockMinerActor ? 'pointer' : 'not-allowed',
+              //   opacity: mockMinerActor ? 1 : 0.5,
+              // }}
               >
                 <Heading size="sm">Step 2: Check Reputation</Heading>
                 <Text color="secondary" size="xs">
@@ -307,10 +321,10 @@ export default function Home() {
 
               <Button
                 fullwidth
-                style={{
-                  cursor: mockMinerActor ? 'pointer' : 'not-allowed',
-                  opacity: mockMinerActor ? 1 : 0.5,
-                }}
+                // style={{
+                //   cursor: mockMinerActor ? 'pointer' : 'not-allowed',
+                //   opacity: mockMinerActor ? 1 : 0.5,
+                // }}
                 onClick={handleReputationSubmit}
               >
                 Check
@@ -320,6 +334,7 @@ export default function Home() {
         </>
       ) : (
         <>
+          {/* <p>{mockMinerActor}</p> */}
           <form
             action=""
             method="post"
