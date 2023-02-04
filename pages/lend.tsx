@@ -3,6 +3,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import LendingManagerABI from '../abi/LendingManager.abi.json';
 
 import Layout from 'components/layout';
 import NormalBlock from 'components/normalBlock/';
@@ -11,13 +12,22 @@ import Head from 'next/head';
 import styled from 'styled-components';
 
 import { useState, useEffect } from 'react';
-import { Input, Button, Fil, Heading, Text, Eclipse } from '../components/ui';
+import {
+  Input,
+  Button,
+  Fil,
+  Heading,
+  Text,
+  Eclipse,
+  Loader,
+} from '../components/ui';
 import { useLendingManagerContractWeb3, useModal } from '../hooks';
 
 import { useSDK } from 'sdk/hooks';
 
 import { MODAL } from '../providers';
 import AccordianUi from 'components/accordian-ui';
+import { mainContractAddress } from 'config/mainContractAddress';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -30,6 +40,7 @@ export default function Home() {
   const [submit, setSubmit] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [amount, setAmount] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { account } = useSDK();
 
@@ -40,8 +51,11 @@ export default function Home() {
     width: 100%;
   `;
 
-  const ButtonWrapper = styled.div`
+  const LoaderWrapper = styled.div`
+    display: flex;
     margin: auto;
+    justify-content: center;
+    margin-bottom: 20px;
   `;
 
   const DecoratorLabelStyle = styled.span`
@@ -118,14 +132,30 @@ export default function Home() {
       interestValue * 100,
     )}, Amount: ${ethers.utils.parseEther(amount)}`);
     if (account) {
-      contractWeb3?.createLendingPosition(
-        endDate._d.getTime(),
-        parseFloat(interestValue) * 100,
-        {
-          value: ethers.utils.parseEther(amount),
-          maxPriorityFeePerGas: priorityFee.result,
-        },
-      );
+      try {
+        setIsLoading(true);
+        contractWeb3?.createLendingPosition(
+          endDate._d.getTime(),
+          parseFloat(interestValue) * 100,
+          {
+            value: ethers.utils.parseEther(amount),
+            maxPriorityFeePerGas: priorityFee.result,
+          },
+        );
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        const contract = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          provider,
+        );
+        contract.on('LenderPosition', async function (duration) {
+          setIsLoading(false);
+        });
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
       if (contractWeb3) {
         setAmount('');
         setInterestValue('');
@@ -157,9 +187,12 @@ export default function Home() {
           Create a new contract.
         </Text>
       </div>
+      <LoaderWrapper>
+        {isLoading ? <Loader color={'secondary'} /> : null}
+      </LoaderWrapper>
       <ConnectionError />
 
-      <DealWrapper>
+      <DealWrapper style={isLoading ? { opacity: '30%' } : { opacity: '100%' }}>
         <form
           action=""
           method="post"
@@ -253,7 +286,11 @@ export default function Home() {
             fullwidth
             variant="filled"
             type="submit"
-            style={{ marginTop: '30px' }}
+            style={
+              !isLoading
+                ? { marginTop: '30px', cursor: 'pointer' }
+                : { marginTop: '30px', cursor: 'not-allowed' }
+            }
           >
             Lend
           </Button>

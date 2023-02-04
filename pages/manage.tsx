@@ -27,10 +27,10 @@ const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
 `;
 
-export default function Active() {
+export default function Manage() {
   const [positions, setPositions] = useState();
   const [isSelectedLoanKey, setisSelectedLoanKey] = useState('');
-  const [selectedOption, setSelectedOption] = useState('lenders');
+  const [selectedOption, setSelectedOption] = useState('Lender');
 
   const { account } = useSDK();
 
@@ -123,9 +123,6 @@ export default function Active() {
       </Head>
       <>
         <div style={{ textAlign: 'center' }}>
-          <HeadingWrapper>
-            <Heading size="sm">Position Manager</Heading>
-          </HeadingWrapper>
           <Toggle
             selectedOption={selectedOption}
             setSelectedOption={setSelectedOption}
@@ -144,7 +141,7 @@ export default function Active() {
           ))}
           <ConnectionError />
 
-          {selectedOption === 'lender' ? (
+          {selectedOption === 'Lender' ? (
             <>
               <div
                 style={{

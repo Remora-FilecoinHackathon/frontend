@@ -69,6 +69,13 @@ export default function Home() {
     margin-left: 15px;
   `;
 
+  const LoaderWrapper = styled.div`
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    margin-bottom: 20px;
+  `;
+
   const HeadingWrapper = styled.div`
     margin-top: 10px;
     margin-bottom: 20px;
@@ -168,34 +175,24 @@ export default function Home() {
 
   const handleReputationSubmit = async (event) => {
     event.preventDefault();
-    const backendAddress = '0x314d0253dC98d53F334Fc4c9Efc3395a918A719F';
     if (account && mockMinerActor) {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const contract = new ethers.Contract(
-          backendAddress,
-          LendingManagerABI,
-          signer,
-        );
-        const contractFrontEnd = new ethers.Contract(
           mainContractAddress,
           LendingManagerABI,
-          provider,
+          signer,
         );
         const tx = await contract.checkReputation(mockMinerActor);
         setIsLoading(true);
         await tx.wait();
-        contractFrontEnd.on(
-          'ReputationReceived',
-          (requestID, response, miner) => {
-            console.log(
-              `reputation${response}, miner:${miner}, requestID:${requestID}`,
-            );
-            setRepIsSuccess(true);
-            setIsLoading(false);
-          },
-        );
+        contract.on('ReputationReceived', async function (id, response, miner) {
+          console.log('**** EVENT RECEIVED ****');
+          console.log(id, response, miner);
+          console.log(response);
+          setRepIsSuccess(true);
+        });
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -209,8 +206,8 @@ export default function Home() {
     | FormEventHandler<HTMLFormElement>
     | undefined = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(`Loan Key:${isSelectedLoanKey},
-      Amount: ${ethers.utils.parseEther(amount)},
+    console.log(`Loan Key:${isSelectedLoanKey._hex},
+      Amount: ${amount},
       Mock Miner Actor: ${mockMinerActor}`);
     var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
     if (account) {
@@ -223,15 +220,13 @@ export default function Home() {
           signer,
         );
         contract.createBorrow(
-          isSelectedLoanKey,
+          isSelectedLoanKey._hex,
           ethers.utils.parseEther(amount),
           mockMinerActor,
           {
             maxPriorityFeePerGas: priorityFee.result,
-            gasLimit: 1000000000, // set manual gas limit
           },
         );
-        await tx.wait();
       } catch (error) {
         console.log(error);
       }
@@ -272,18 +267,25 @@ export default function Home() {
             method="post"
             style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}
           >
-            <div style={{ textAlign: 'center' }}>
+            <div
+              style={
+                !isLoading
+                  ? { textAlign: 'center', opacity: '100%' }
+                  : { textAlign: 'center', opacity: '50%' }
+              }
+            >
               <HeadingWrapper>
                 <Heading size="sm">Step 1: Deploy Mock Contract</Heading>
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation
                 </Text>
-                {isLoading ? <Loader color="secondary" /> : null}
+                <LoaderWrapper>
+                  {isLoading ? <Loader color="secondary" /> : null}
+                </LoaderWrapper>
               </HeadingWrapper>
               <Button
                 fullwidth
                 variant={'outlined'}
-                color={!isLoading ? 'primary' : 'secondary'}
                 onClick={handleDeployMockMinerActor}
                 style={{ marginBottom: '40px' }}
               >
@@ -309,7 +311,6 @@ export default function Home() {
                   cursor: mockMinerActor ? 'pointer' : 'not-allowed',
                   opacity: mockMinerActor ? 1 : 0.5,
                 }}
-                color={!isLoading ? 'primary' : 'secondary'}
                 onClick={handleReputationSubmit}
               >
                 Check

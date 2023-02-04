@@ -1,23 +1,28 @@
-import { Button } from 'components/ui';
-import React, { useState } from 'react';
+import { Button, Text } from 'components/ui';
+import * as React from 'react';
 
-const Toggle = ({ selectedOption, setSelectedOption }) => {
-  const handleOptionChange = () => {
-    setSelectedOption((prevOption) => {
-      return prevOption === 'lenders' ? 'borrowers' : 'lenders';
-    });
-  };
-
+export default function Toggle({ selectedOption, setSelectedOption }) {
   return (
-    <div>
+    <>
+      <Text color="secondary">Manage</Text>
       <Button
-        onClick={handleOptionChange}
-        className={`toggle-button ${
-          selectedOption === 'lenders' ? 'left' : 'right'
-        }`}
-      ></Button>
-    </div>
+        color={'secondary'}
+        fullwidth
+        variant={selectedOption === 'Lender' ? 'translucent' : 'ghost'}
+        style={{ marginBottom: '10px' }}
+        onClick={() => setSelectedOption('Lender')}
+      >
+        Lender
+      </Button>
+      <Button
+        color={'secondary'}
+        fullwidth
+        variant={selectedOption === 'Borrower' ? 'translucent' : 'ghost'}
+        style={{ marginBottom: '20px' }}
+        onClick={() => setSelectedOption('Borrower')}
+      >
+        Borrower
+      </Button>
+    </>
   );
-};
-
-export default Toggle;
+}

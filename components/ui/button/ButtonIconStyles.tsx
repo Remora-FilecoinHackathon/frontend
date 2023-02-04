@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const ButtonWrapperStyle = styled.span`
   display: flex;
@@ -6,7 +6,7 @@ export const ButtonWrapperStyle = styled.span`
   justify-content: center;
   min-height: 1em;
   min-width: 1em;
-`
+`;
 
 export const ButtonIconStyle = styled.span<{ $square: boolean }>`
   margin: ${({ $square }) => ($square ? '-12px' : '-12px -6px')};
@@ -15,11 +15,11 @@ export const ButtonIconStyle = styled.span<{ $square: boolean }>`
   svg {
     fill: currentColor;
   }
-`
+`;
 
 export const ButtonContentStyle = styled.span`
   margin-left: 10px;
   :empty {
     display: none;
   }
-`
+`;
