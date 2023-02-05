@@ -2,11 +2,29 @@ import { Button, Heading, Text } from 'components/ui';
 import * as React from 'react';
 import styled from 'styled-components';
 
-export default function Toggle({ selectedOption, setSelectedOption }) {
+export default function Toggle({
+  selectedOption,
+  setSelectedOption,
+  setIsBorrower,
+  setIsLender,
+}) {
   const HeadingWrapper = styled.div`
     margin-top: 10px;
     margin-bottom: 20px;
   `;
+  const toggleLender = () => {
+    setIsBorrower(false);
+    setSelectedOption('Lender');
+    setIsLender(true);
+    console.log('lender button');
+  };
+  const toggleBorrower = () => {
+    setIsLender(false);
+    setSelectedOption('Lender');
+    setIsBorrower(true);
+    console.log('borrower button');
+  };
+
   return (
     <>
       <HeadingWrapper>
@@ -18,7 +36,7 @@ export default function Toggle({ selectedOption, setSelectedOption }) {
         fullwidth
         variant={selectedOption === 'Lender' ? 'translucent' : 'ghost'}
         style={{ marginBottom: '10px' }}
-        onClick={() => setSelectedOption('Lender')}
+        onClick={toggleLender}
       >
         Lender
       </Button>
@@ -27,7 +45,7 @@ export default function Toggle({ selectedOption, setSelectedOption }) {
         fullwidth
         variant={selectedOption === 'Borrower' ? 'translucent' : 'ghost'}
         style={{ marginBottom: '10px' }}
-        onClick={() => setSelectedOption('Borrower')}
+        onClick={toggleBorrower}
       >
         Borrower
       </Button>

@@ -3,13 +3,14 @@ import React, { useEffect } from 'react';
 import moment from 'moment';
 import StackedBlock from 'components/stackedBlock';
 
-const ActivePositionModule = ({
-  liquidity,
+const BorrowerPositionModule = ({
+  loanAmount,
   interestRate,
   endDate,
   handleSelectedEscrow,
   isSelectedEscrow,
   escrowAddress,
+  isStarted,
 }) => {
   const toggleSelection = () => {
     handleSelectedEscrow(
@@ -35,7 +36,7 @@ const ActivePositionModule = ({
         <div style={{ marginLeft: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
             <p style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}>
-              {liquidity}
+              {loanAmount}
             </p>
             <Fil style={{ marginLeft: '12px' }} />
           </div>
@@ -64,4 +65,4 @@ const ActivePositionModule = ({
   );
 };
 
-export default ActivePositionModule;
+export default BorrowerPositionModule;

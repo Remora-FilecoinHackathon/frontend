@@ -27,20 +27,25 @@ import { MODAL } from '../providers';
 import { Button, Eclipse, Fil, Heading, Input, Text } from 'components/ui';
 import StackedBlock from 'components/stackedBlock';
 import { ethers } from 'ethers';
-import ActivePositionModule from 'components/modules/ActivePositionModule';
+import ActivePositionModule from 'components/modules/LenderPositionModule';
 import Toggle from 'components/toggle/Toggle';
 import AccordianUi from 'components/accordian-ui';
+import LenderPositionModule from 'components/modules/LenderPositionModule';
+import BorrowerPositionModule from 'components/modules/BorrowerPositionModule';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
 `;
 
 export default function Manage() {
-  const [positions, setPositions] = useState();
+  const [loanPositions, setLoanPositions] = useState();
+  const [borrowerPositions, setBorrowerPositions] = useState();
   const [isSelectedEscrow, setisSelectedEscrow] = useState('');
+  const [isBorrower, setIsBorrower] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Lender');
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isLender, setIsLender] = useState(true);
 
   const { account } = useSDK();
 
@@ -109,11 +114,10 @@ export default function Manage() {
           signer,
         );
         setIsLoading(true);
-        await contract.startLoan();
-        setTimeout(() => {
-          setIsLoading(false);
-          console.log('Loan is started');
-        }, 30000);
+        const tx = await contract.startLoan();
+        await tx?.wait();
+        setIsLoading(false);
+        console.log('Loan has started');
       } catch (error) {
         console.error(`there is an Error: ${error}`);
         setIsLoading(false);
@@ -206,6 +210,7 @@ export default function Manage() {
     }
   };
 
+  // SET LENDER POSITIONS
   useEffect(() => {
     (async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -219,7 +224,7 @@ export default function Manage() {
         await contract.getLoanKeysLength()
       ).toNumber();
       console.log('starting loop');
-
+      console.log(loanKeysTotalNumber);
       if (loanKeysTotalNumber > 0) {
         const positionsArray = [];
         for (let i = 0; i < loanKeysTotalNumber; i++) {
@@ -258,10 +263,58 @@ export default function Manage() {
             );
           }
         }
-        setPositions(positionsArray);
+        setLoanPositions(positionsArray);
       }
     })();
   }, [account]);
+
+  // SET BORROW POSITIONS
+  useEffect(() => {
+    (async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(
+        mainContractAddress,
+        LendingManagerABI,
+        provider,
+      );
+      const escrowAddress = await contract.borrowerPositions(account, 0);
+      if (escrowAddress) {
+        const positionsArray = [];
+        for (let i = 0; i < 1; i++) {
+          const escrowAddress = await contract.borrowerPositions(account, i);
+          console.log(escrowAddress);
+          const escrowContract = new ethers.Contract(
+            escrowAddress,
+            EscrowABI,
+            provider,
+          );
+          console.log(`successful grabbing ${escrowAddress}`);
+          const loanAmount = await escrowContract.loanAmount();
+          const interestRate = await escrowContract.rateAmount();
+          const loanPaidAmount = await escrowContract.loanPaidAmount();
+          const lastWithdraw = await escrowContract.lastWithdraw();
+          const isStarted = await escrowContract.started();
+          const endDate = await escrowContract.end();
+
+          const escrowFormatted = {
+            id: i,
+            escrowAddress: escrowAddress,
+            loanAmount: ethers.utils.formatEther(loanAmount),
+            interestRate: interestRate.toString(),
+            loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
+            lastWithdraw: lastWithdraw.toString(),
+            isStarted: isStarted,
+            endDate: endDate.toString(),
+          };
+          console.log(escrowFormatted);
+          console.log(`current loop on position: ${i}`);
+          console.log(`pushing index:{i} position to ui`);
+          positionsArray.push(escrowFormatted);
+        }
+        setBorrowerPositions(positionsArray);
+      }
+    })();
+  }, [isLender]);
 
   // handling fade in animations
   useEffect(() => {
@@ -282,22 +335,37 @@ export default function Manage() {
               <Toggle
                 selectedOption={selectedOption}
                 setSelectedOption={setSelectedOption}
+                setIsLender={setIsLender}
+                setIsBorrower={setIsBorrower}
               />
               <HeadingWrapper>
                 <Heading size="sm"> Select Position to manage</Heading>
               </HeadingWrapper>
-              {positions?.map((position) => (
-                <ActivePositionModule
-                  key={position.loanKey}
-                  loanKey={position.loanKey}
-                  liquidity={position.availableAmount}
-                  interestRate={position.interestRate}
-                  endDate={position.endDate}
-                  handleSelectedEscrow={handleSelectedEscrow}
-                  isSelectedEscrow={isSelectedEscrow}
-                  escrowAddress={position.escrowAddress}
-                />
-              ))}
+              {isLender
+                ? loanPositions?.map((position) => (
+                    <LenderPositionModule
+                      key={position.loanKey}
+                      loanKey={position.loanKey}
+                      liquidity={position.availableAmount}
+                      interestRate={position.interestRate}
+                      endDate={position.endDate}
+                      handleSelectedEscrow={handleSelectedEscrow}
+                      isSelectedEscrow={isSelectedEscrow}
+                      escrowAddress={position.escrowAddress}
+                    />
+                  ))
+                : borrowerPositions?.map((position) => (
+                    <BorrowerPositionModule
+                      key={position.id}
+                      loanAmount={position.loanAmount}
+                      interestRate={position.interestRate}
+                      lastWithdraw={position.lastWithdraw}
+                      handleSelectedEscrow={handleSelectedEscrow}
+                      isSelectedEscrow={isSelectedEscrow}
+                      escrowAddress={position.escrowAddress}
+                      isStarted={position.isStarted}
+                    />
+                  ))}
               <ConnectionError />
               <HeadingWrapper>
                 <Heading size={'sm'}>Choose action</Heading>
@@ -317,7 +385,7 @@ export default function Manage() {
                       size={'md'}
                       loading={isLoading ? true : false}
                       style={{ marginRight: '10px' }}
-                      onClick={handleRepay}
+                      onClick={startLoan}
                     >
                       Start Loan
                     </Button>
