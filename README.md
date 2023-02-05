@@ -21,6 +21,7 @@ Step 3. Install dependencies
 
 ```bash
 yarn install
+yarn typechain
 ```
 
 Step 4. Start the development server
