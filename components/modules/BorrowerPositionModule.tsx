@@ -44,8 +44,11 @@ const BorrowerPositionModule = ({
         </div>
         <div style={{ marginRight: '20px' }}>
           <div>
-            <p style={{ color: 'var(--secondary-color)' }}>{interestRate}%</p>
-            <p>Interest Rate</p>
+            <p style={{ color: 'var(--secondary-color)' }}>
+              {interestRate}{' '}
+              <span style={{ color: 'var(--white-color)' }}>Fil</span>
+            </p>
+            <p>Monthly Interest Rate</p>
           </div>
           <div>
             <p

@@ -300,7 +300,7 @@ export default function Manage() {
             id: i,
             escrowAddress: escrowAddress,
             loanAmount: ethers.utils.formatEther(loanAmount),
-            interestRate: interestRate.toString(),
+            interestRate: ethers.utils.formatEther(interestRate),
             loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
             lastWithdraw: lastWithdraw.toString(),
             isStarted: isStarted,
@@ -358,6 +358,7 @@ export default function Manage() {
                     <BorrowerPositionModule
                       key={position.id}
                       loanAmount={position.loanAmount}
+                      endDate={position.endDate}
                       interestRate={position.interestRate}
                       lastWithdraw={position.lastWithdraw}
                       handleSelectedEscrow={handleSelectedEscrow}
