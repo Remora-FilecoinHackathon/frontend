@@ -17,6 +17,7 @@ const LenderPositionModule = ({
       isSelectedEscrow === escrowAddress ? '' : escrowAddress,
     );
   };
+  console.log(`This is ${loanAmount}`);
   return (
     <>
       <Text size="xxs" color="secondary">

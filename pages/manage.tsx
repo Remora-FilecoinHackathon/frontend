@@ -272,8 +272,6 @@ export default function Manage() {
               const lastWithdraw = await escrowContract.lastWithdraw();
               const isStarted = await escrowContract.started();
               const endDate = await escrowContract.end();
-              setIsLoading(false);
-
               const escrowFormatted = {
                 key: i,
                 id: i,
@@ -302,8 +300,9 @@ export default function Manage() {
           setLoanPositions(positionsArray);
         }
       } else {
-        null;
+        setIsLoading(false);
       }
+      setIsLoading(false);
     })();
   }, [isBorrower]);
 
@@ -361,9 +360,11 @@ export default function Manage() {
           }
           setBorrowerPositions(positionsArray);
         } else {
-          null;
+          setIsLoading(false);
         }
+        setIsLoading(false);
       }
+      setIsLoading(false);
     })();
   }, [isLender]);
 
@@ -395,7 +396,7 @@ export default function Manage() {
                     <LenderPositionModule
                       key={position.loanKey}
                       loanKey={position.loanKey}
-                      liquidity={position.availableAmount}
+                      liquidity={position.loanAmount}
                       interestRate={position.interestRate}
                       endDate={position.endDate}
                       handleSelectedEscrow={handleSelectedEscrow}
