@@ -46,6 +46,8 @@ export default function Manage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isLender, setIsLender] = useState(true);
+  const [showLoans, setShowLoans] = useState(false);
+  const [showBorrows, setShowBorrows] = useState(false);
 
   const { account } = useSDK();
 
@@ -213,105 +215,122 @@ export default function Manage() {
   // SET LENDER POSITIONS
   useEffect(() => {
     (async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(
-        mainContractAddress,
-        LendingManagerABI,
-        provider,
-      );
+      if (isLender) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          provider,
+        );
 
-      const loanKeysTotalNumber = (
-        await contract.getLoanKeysLength()
-      ).toNumber();
-      console.log('starting loop');
-      console.log(loanKeysTotalNumber);
-      if (loanKeysTotalNumber > 0) {
-        const positionsArray = [];
-        for (let i = 0; i < loanKeysTotalNumber; i++) {
-          const loanKey = await contract.loanKeys([i]);
-          const position = await contract.positions(loanKey._hex);
-          const positionFormatted = {
-            id: [i],
-            loanKey: loanKey,
-            lender: position.lender,
-            availableAmount: ethers.utils.formatEther(
-              position.availableAmount.toString(),
-            ),
-
-            interestRate: position.interestRate.toString() / 100,
-            endDate: position.endTimestamp.toString(),
-          };
-          console.log(`current loop on position: ${i}`);
-          if (account !== positionFormatted.lender) {
-            console.log(`negative match position at index ${i} with lender`);
-          }
-          if (account === positionFormatted.lender) {
-            console.log(`positive match position at index ${i} with lender`);
-            const escrowContract = await contract.escrowContracts(
-              positionFormatted.loanKey,
-              positionFormatted.id,
-            );
-            if (escrowContract) {
-              console.log(`pushing index:{i} position to ui`);
-              positionFormatted.escrowAddress = escrowContract;
-              positionsArray.push(positionFormatted);
-            }
-            console.log(
-              escrowContract
-                ? `escrow contract:${escrowContract} at index ${i}`
-                : `could not find escrow contract`,
-            );
-          }
+        const loanKeysTotalNumber = (
+          await contract.getLoanKeysLength()
+        ).toNumber();
+        console.log('starting loop');
+        console.log(loanKeysTotalNumber);
+        if (loanKeysTotalNumber === 0) {
+          setShowLoans(true);
+          setShowBorrows(false);
         }
-        setLoanPositions(positionsArray);
+        if (loanKeysTotalNumber > 0) {
+          const positionsArray = [];
+          for (let i = 0; i < loanKeysTotalNumber; i++) {
+            const loanKey = await contract.loanKeys([i]);
+            const position = await contract.positions(loanKey._hex);
+            const positionFormatted = {
+              id: [i],
+              loanKey: loanKey,
+              lender: position.lender,
+              availableAmount: ethers.utils.formatEther(
+                position.availableAmount.toString(),
+              ),
+
+              interestRate: position.interestRate.toString() / 100,
+              endDate: position.endTimestamp.toString(),
+            };
+            console.log(`current loop on position: ${i}`);
+            if (account !== positionFormatted.lender) {
+              console.log(`negative match position at index ${i} with lender`);
+            }
+            if (account === positionFormatted.lender) {
+              console.log(`positive match position at index ${i} with lender`);
+              const escrowContract = await contract.escrowContracts(
+                positionFormatted.loanKey,
+                positionFormatted.id,
+              );
+              if (escrowContract) {
+                console.log(`pushing index:{i} position to ui`);
+                positionFormatted.escrowAddress = escrowContract;
+                positionsArray.push(positionFormatted);
+              }
+              console.log(
+                escrowContract
+                  ? `escrow contract:${escrowContract} at index ${i}`
+                  : `could not find escrow contract`,
+              );
+            }
+          }
+          setLoanPositions(positionsArray);
+        }
+      } else {
+        null;
       }
     })();
-  }, [account]);
+  }, [isBorrower]);
 
   // SET BORROW POSITIONS
   useEffect(() => {
     (async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(
-        mainContractAddress,
-        LendingManagerABI,
-        provider,
-      );
-      const escrowAddress = await contract.borrowerPositions(account, 0);
-      if (escrowAddress) {
-        const positionsArray = [];
-        for (let i = 0; i < 1; i++) {
-          const escrowAddress = await contract.borrowerPositions(account, i);
-          console.log(escrowAddress);
-          const escrowContract = new ethers.Contract(
-            escrowAddress,
-            EscrowABI,
-            provider,
-          );
-          console.log(`successful grabbing ${escrowAddress}`);
-          const loanAmount = await escrowContract.loanAmount();
-          const interestRate = await escrowContract.rateAmount();
-          const loanPaidAmount = await escrowContract.loanPaidAmount();
-          const lastWithdraw = await escrowContract.lastWithdraw();
-          const isStarted = await escrowContract.started();
-          const endDate = await escrowContract.end();
+      if (isBorrower) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          provider,
+        );
 
-          const escrowFormatted = {
-            id: i,
-            escrowAddress: escrowAddress,
-            loanAmount: ethers.utils.formatEther(loanAmount),
-            interestRate: ethers.utils.formatEther(interestRate),
-            loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
-            lastWithdraw: lastWithdraw.toString(),
-            isStarted: isStarted,
-            endDate: endDate.toString(),
-          };
-          console.log(escrowFormatted);
-          console.log(`current loop on position: ${i}`);
-          console.log(`pushing index:{i} position to ui`);
-          positionsArray.push(escrowFormatted);
+        const escrowAddress = await contract.borrowerPositions(account, 0);
+        if (escrowAddress === 0) {
+          setShowLoans(false);
+          setShowBorrows(true);
         }
-        setBorrowerPositions(positionsArray);
+        if (escrowAddress) {
+          const positionsArray = [];
+          for (let i = 0; i < 1; i++) {
+            const escrowAddress = await contract.borrowerPositions(account, i);
+            console.log(escrowAddress);
+            const escrowContract = new ethers.Contract(
+              escrowAddress,
+              EscrowABI,
+              provider,
+            );
+            console.log(`successful grabbing ${escrowAddress}`);
+            const loanAmount = await escrowContract.loanAmount();
+            const interestRate = await escrowContract.rateAmount();
+            const loanPaidAmount = await escrowContract.loanPaidAmount();
+            const lastWithdraw = await escrowContract.lastWithdraw();
+            const isStarted = await escrowContract.started();
+            const endDate = await escrowContract.end();
+
+            const escrowFormatted = {
+              id: i,
+              escrowAddress: escrowAddress,
+              loanAmount: ethers.utils.formatEther(loanAmount),
+              interestRate: ethers.utils.formatEther(interestRate),
+              loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
+              lastWithdraw: lastWithdraw.toString(),
+              isStarted: isStarted,
+              endDate: endDate.toString(),
+            };
+            console.log(escrowFormatted);
+            console.log(`current loop on position: ${i}`);
+            console.log(`pushing index:{i} position to ui`);
+            positionsArray.push(escrowFormatted);
+          }
+          setBorrowerPositions(positionsArray);
+        } else {
+          null;
+        }
       }
     })();
   }, [isLender]);
@@ -338,9 +357,7 @@ export default function Manage() {
                 setIsLender={setIsLender}
                 setIsBorrower={setIsBorrower}
               />
-              <HeadingWrapper>
-                <Heading size="sm"> Select Position to manage</Heading>
-              </HeadingWrapper>
+
               {isLender
                 ? loanPositions?.map((position) => (
                     <LenderPositionModule
@@ -367,6 +384,7 @@ export default function Manage() {
                       isStarted={position.isStarted}
                     />
                   ))}
+
               <ConnectionError />
               <HeadingWrapper>
                 <Heading size={'sm'}>Choose action</Heading>
@@ -384,6 +402,7 @@ export default function Manage() {
                   >
                     <Button
                       size={'md'}
+                      disabled={!isLender}
                       loading={isLoading ? true : false}
                       style={{ marginRight: '10px' }}
                       onClick={startLoan}
@@ -392,6 +411,7 @@ export default function Manage() {
                     </Button>
                     <Button
                       size={'md'}
+                      disabled={!isLender}
                       loading={isLoading ? true : false}
                       style={{ marginLeft: '10px' }}
                       onClick={handleWithdraw}
@@ -410,6 +430,7 @@ export default function Manage() {
                       size={'md'}
                       loading={isLoading ? true : false}
                       variant={'outlined'}
+                      disabled={!isLender}
                       style={{ marginRight: '10px' }}
                       onClick={handleCloseLoan}
                     >
@@ -419,6 +440,7 @@ export default function Manage() {
                       size={'md'}
                       loading={isLoading ? true : false}
                       variant={'outlined'}
+                      disabled={!isLender}
                       style={{ marginLeft: '10px' }}
                       onClick={handleRepay}
                     >

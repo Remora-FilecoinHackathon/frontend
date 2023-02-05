@@ -33,7 +33,7 @@ const LenderPositionModule = ({
         }}
       >
         <div style={{ marginLeft: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'right', margin: '8px' }}>
             <p style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}>
               {liquidity}
             </p>

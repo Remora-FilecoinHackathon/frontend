@@ -33,24 +33,39 @@ const BorrowerPositionModule = ({
           marginBottom: '60px',
         }}
       >
-        <div style={{ marginLeft: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', margin: '8px' }}>
-            <p style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}>
+        <div style={{ marginLeft: '20px', justifyContent: 'left' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'left',
+            }}
+          >
+            <p
+              style={{
+                display: 'flex',
+                fontSize: '28px',
+                color: 'white',
+                fontStyle: 'bold',
+                alignItems: 'center',
+              }}
+            >
               {loanAmount}
             </p>
             <Fil style={{ marginLeft: '12px' }} />
           </div>
-          <p>Available Liquidity</p>
+          <p style={{ display: 'flex', alignItems: 'left' }}>
+            Available Liquidity
+          </p>
         </div>
-        <div style={{ marginRight: '20px' }}>
-          <div>
+        <div style={{ marginRight: '20px', justifyContent: 'right' }}>
+          <div style={{ display: 'display', textAlign: 'right' }}>
             <p style={{ color: 'var(--secondary-color)' }}>
               {interestRate}{' '}
               <span style={{ color: 'var(--white-color)' }}>Fil</span>
             </p>
-            <p>Monthly Interest Rate</p>
+            <p>Monthly Interest Amount</p>
           </div>
-          <div>
+          <div style={{ display: 'display', textAlign: 'right' }}>
             <p
               style={{
                 color: +moment() < endDate ? 'var(--primary-color)' : 'red',

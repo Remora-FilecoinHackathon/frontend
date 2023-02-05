@@ -20,7 +20,7 @@ export default function Toggle({
   };
   const toggleBorrower = () => {
     setIsLender(false);
-    setSelectedOption('Lender');
+    setSelectedOption('Borrower');
     setIsBorrower(true);
     console.log('borrower button');
   };
