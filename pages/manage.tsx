@@ -252,57 +252,54 @@ export default function Manage() {
             console.log(`current loop on position: ${i}`);
             if (account !== positionFormatted.lender) {
               console.log(`negative match position at index ${i} with lender`);
-              setIsLoading(false);
             }
             if (account === positionFormatted.lender) {
               console.log(`positive match position at index ${i} with lender`);
-              const escrowAddress = await contract.escrowContracts(
-                positionFormatted.loanKey,
-                positionFormatted.id,
-              );
-              const escrowContract = new ethers.Contract(
-                escrowAddress,
-                EscrowABI,
-                provider,
-              );
-              console.log(`successful grabbing ${escrowAddress}`);
-              const loanAmount = await escrowContract.loanAmount();
-              const interestRate = await escrowContract.rateAmount();
-              const loanPaidAmount = await escrowContract.loanPaidAmount();
-              const lastWithdraw = await escrowContract.lastWithdraw();
-              const isStarted = await escrowContract.started();
-              const endDate = await escrowContract.end();
-              const escrowFormatted = {
-                key: i,
-                id: i,
-                escrowAddress: escrowAddress,
-                loanAmount: ethers.utils.formatEther(loanAmount),
-                interestRate: ethers.utils.formatEther(interestRate),
-                loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
-                lastWithdraw: lastWithdraw.toString(),
-                isStarted: isStarted,
-                endDate: endDate.toString(),
-              };
-              if (escrowContract) {
-                setIsLoading(false);
+              try {
+                const escrowAddress = await contract.escrowContracts(
+                  positionFormatted.loanKey,
+                  positionFormatted.id,
+                );
+
+                const escrowContract = new ethers.Contract(
+                  escrowAddress,
+                  EscrowABI,
+                  provider,
+                );
+                console.log(`successful grabbing ${escrowAddress}`);
+                const loanAmount = await escrowContract.loanAmount();
+                const interestRate = await escrowContract.rateAmount();
+                const loanPaidAmount = await escrowContract.loanPaidAmount();
+                const lastWithdraw = await escrowContract.lastWithdraw();
+                const isStarted = await escrowContract.started();
+                const endDate = await escrowContract.end();
+                const escrowFormatted = {
+                  key: i,
+                  id: i,
+                  escrowAddress: escrowAddress,
+                  loanAmount: ethers.utils.formatEther(loanAmount),
+                  interestRate: ethers.utils.formatEther(interestRate),
+                  loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
+                  lastWithdraw: lastWithdraw.toString(),
+                  isStarted: isStarted,
+                  endDate: endDate.toString(),
+                };
+
                 console.log(`pushing index:${i} position to ui`);
                 positionsArray.push(escrowFormatted);
+              } catch (error) {
+                console.error(error);
+                setIsLoading(false);
               }
-              setIsLoading(false);
 
-              console.log(
-                escrowContract
-                  ? `escrow contract:${escrowContract} at index ${i}`
-                  : `could not find escrow contract`,
-              );
+              setLoanPositions(positionsArray);
             }
           }
-          setLoanPositions(positionsArray);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
         }
-      } else {
-        setIsLoading(false);
       }
-      setIsLoading(false);
     })();
   }, [isBorrower]);
 
@@ -324,6 +321,7 @@ export default function Manage() {
           if (escrowAddress === 0) {
             setShowLoans(false);
             setShowBorrows(true);
+            setLoading(false);
           }
           if (escrowAddress) {
             const positionsArray = [];
