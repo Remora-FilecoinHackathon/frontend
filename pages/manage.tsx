@@ -396,7 +396,7 @@ export default function Manage() {
                     <LenderPositionModule
                       key={position.loanKey}
                       loanKey={position.loanKey}
-                      liquidity={position.loanAmount}
+                      loanAmount={position.loanAmount}
                       interestRate={position.interestRate}
                       endDate={position.endDate}
                       handleSelectedEscrow={handleSelectedEscrow}
