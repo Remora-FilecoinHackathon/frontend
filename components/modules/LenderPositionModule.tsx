@@ -4,12 +4,13 @@ import moment from 'moment';
 import StackedBlock from 'components/stackedBlock';
 
 const LenderPositionModule = ({
-  liquidity,
+  loanAmount,
   interestRate,
   endDate,
   handleSelectedEscrow,
   isSelectedEscrow,
   escrowAddress,
+  isStarted,
 }) => {
   const toggleSelection = () => {
     handleSelectedEscrow(
@@ -32,21 +33,39 @@ const LenderPositionModule = ({
           marginBottom: '60px',
         }}
       >
-        <div style={{ marginLeft: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'right', margin: '8px' }}>
-            <p style={{ fontSize: '28px', color: 'white', fontStyle: 'bold' }}>
-              {liquidity}
+        <div style={{ marginLeft: '20px', justifyContent: 'left' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'left',
+            }}
+          >
+            <p
+              style={{
+                display: 'flex',
+                fontSize: '28px',
+                color: 'white',
+                fontStyle: 'bold',
+                alignItems: 'center',
+              }}
+            >
+              {loanAmount}
             </p>
             <Fil style={{ marginLeft: '12px' }} />
           </div>
-          <p>Available Liquidity</p>
+          <p style={{ display: 'flex', alignItems: 'left' }}>
+            Available Liquidity
+          </p>
         </div>
-        <div style={{ marginRight: '20px' }}>
-          <div>
-            <p style={{ color: 'var(--secondary-color)' }}>{interestRate}%</p>
-            <p>Interest Rate</p>
+        <div style={{ marginRight: '20px', justifyContent: 'right' }}>
+          <div style={{ display: 'display', textAlign: 'right' }}>
+            <p style={{ color: 'var(--secondary-color)' }}>
+              {interestRate}{' '}
+              <span style={{ color: 'var(--white-color)' }}>Fil</span>
+            </p>
+            <p>Monthly Interest Amount</p>
           </div>
-          <div>
+          <div style={{ display: 'display', textAlign: 'right' }}>
             <p
               style={{
                 color: +moment() < endDate ? 'var(--primary-color)' : 'red',
