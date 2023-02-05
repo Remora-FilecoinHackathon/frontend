@@ -115,8 +115,8 @@ export default function Manage() {
           EscrowABI,
           signer,
         );
-        setIsLoading(true);
         const tx = await contract.startLoan();
+        setIsLoading(true);
         await tx?.wait();
         setIsLoading(false);
         console.log('Loan has started');
@@ -309,62 +309,71 @@ export default function Manage() {
   // SET BORROW POSITIONS
   useEffect(() => {
     (async () => {
-      if (isBorrower && !isLender) {
-        setIsLoading(true);
+      try {
+        if (isBorrower && !isLender) {
+          setIsLoading(true);
 
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const contract = new ethers.Contract(
-          mainContractAddress,
-          LendingManagerABI,
-          provider,
-        );
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const contract = new ethers.Contract(
+            mainContractAddress,
+            LendingManagerABI,
+            provider,
+          );
 
-        const escrowAddress = await contract.borrowerPositions(account, 0);
-        if (escrowAddress === 0) {
-          setShowLoans(false);
-          setShowBorrows(true);
-        }
-        if (escrowAddress) {
-          const positionsArray = [];
-          for (let i = 0; i < 1; i++) {
-            const escrowAddress = await contract.borrowerPositions(account, i);
-            console.log(escrowAddress);
-            const escrowContract = new ethers.Contract(
-              escrowAddress,
-              EscrowABI,
-              provider,
-            );
-            console.log(`successful grabbing ${escrowAddress}`);
-            const loanAmount = await escrowContract.loanAmount();
-            const interestRate = await escrowContract.rateAmount();
-            const loanPaidAmount = await escrowContract.loanPaidAmount();
-            const lastWithdraw = await escrowContract.lastWithdraw();
-            const isStarted = await escrowContract.started();
-            const endDate = await escrowContract.end();
-
-            const escrowFormatted = {
-              id: i,
-              escrowAddress: escrowAddress,
-              loanAmount: ethers.utils.formatEther(loanAmount),
-              interestRate: ethers.utils.formatEther(interestRate),
-              loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
-              lastWithdraw: lastWithdraw.toString(),
-              isStarted: isStarted,
-              endDate: endDate.toString(),
-            };
-            console.log(escrowFormatted);
-            setIsLoading(false);
-            console.log(`current loop on position: ${i}`);
-            console.log(`pushing index:{i} position to ui`);
-            positionsArray.push(escrowFormatted);
+          const escrowAddress = await contract.borrowerPositions(account, 0);
+          if (escrowAddress === 0) {
+            setShowLoans(false);
+            setShowBorrows(true);
           }
-          setBorrowerPositions(positionsArray);
-        } else {
+          if (escrowAddress) {
+            const positionsArray = [];
+            for (let i = 0; i < 1; i++) {
+              const escrowAddress = await contract.borrowerPositions(
+                account,
+                i,
+              );
+              console.log(escrowAddress);
+              const escrowContract = new ethers.Contract(
+                escrowAddress,
+                EscrowABI,
+                provider,
+              );
+              console.log(`successful grabbing ${escrowAddress}`);
+              const loanAmount = await escrowContract.loanAmount();
+              const interestRate = await escrowContract.rateAmount();
+              const loanPaidAmount = await escrowContract.loanPaidAmount();
+              const lastWithdraw = await escrowContract.lastWithdraw();
+              const isStarted = await escrowContract.started();
+              const endDate = await escrowContract.end();
+
+              const escrowFormatted = {
+                id: i,
+                escrowAddress: escrowAddress,
+                loanAmount: ethers.utils.formatEther(loanAmount),
+                interestRate: ethers.utils.formatEther(interestRate),
+                loanPaidAmount: ethers.utils.formatEther(loanPaidAmount),
+                lastWithdraw: lastWithdraw.toString(),
+                isStarted: isStarted,
+                endDate: endDate.toString(),
+              };
+              console.log(escrowFormatted);
+              setIsLoading(false);
+              console.log(`current loop on position: ${i}`);
+              console.log(`pushing index:{i} position to ui`);
+              positionsArray.push(escrowFormatted);
+            }
+            setBorrowerPositions(positionsArray);
+            setIsLoading(false);
+          } else {
+            setIsLoading(false);
+          }
           setIsLoading(false);
         }
         setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error);
       }
-      setIsLoading(false);
     })();
   }, [isLender]);
 
@@ -437,15 +446,6 @@ export default function Manage() {
                       size={'md'}
                       disabled={!isLender}
                       loading={isLoading ? true : false}
-                      style={{ marginRight: '10px' }}
-                      onClick={startLoan}
-                    >
-                      Start Loan
-                    </Button>
-                    <Button
-                      size={'md'}
-                      disabled={!isLender}
-                      loading={isLoading ? true : false}
                       style={{ marginLeft: '10px' }}
                       onClick={handleWithdraw}
                     >
@@ -482,33 +482,64 @@ export default function Manage() {
                   </div>
                 </>
               ) : (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-evenly',
-                  }}
-                >
-                  <Button
-                    size={'md'}
-                    type="submit"
-                    style={{ marginLeft: '10px' }}
-                    loading={isLoading ? true : false}
-                    onClick={handleRepay}
+                <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-evenly',
+                      marginBottom: '20px',
+                    }}
                   >
-                    Call Repay
-                  </Button>
-                  <Button
-                    size={'md'}
-                    variant={'outlined'}
-                    type="submit"
-                    style={{ marginRight: '10px' }}
-                    loading={isLoading ? true : false}
-                    onClick={startLoan}
+                    <Button
+                      size={'md'}
+                      type="submit"
+                      style={{ marginLeft: '10px' }}
+                      loading={isLoading ? true : false}
+                      onClick={handleRepay}
+                    >
+                      Call Repay
+                    </Button>
+                    <Button
+                      size={'md'}
+                      variant={'outlined'}
+                      type="submit"
+                      style={{ marginRight: '10px' }}
+                      loading={isLoading ? true : false}
+                      onClick={startLoan}
+                    >
+                      Start Loan
+                    </Button>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-evenly',
+                      marginLeft: '20px',
+                      marginBottom: '20px',
+                    }}
                   >
-                    Start Loan
-                  </Button>
-                </div>
+                    <Button
+                      fullwidth
+                      style={{ marginRight: '20px' }}
+                      variant={'translucent'}
+                      loading={isLoading ? true : false}
+                      onClick={handleRepay}
+                    >
+                      Miner Actor In
+                    </Button>
+                    <Button
+                      fullwidth
+                      variant={'translucent'}
+                      style={{ marginRight: '20px' }}
+                      loading={isLoading ? true : false}
+                      onClick={startLoan}
+                    >
+                      Miner Actor Out
+                    </Button>
+                  </div>
+                </>
               )}
             </div>
           </div>

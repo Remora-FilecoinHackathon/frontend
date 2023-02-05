@@ -35,6 +35,23 @@ const LenderPositionModule = ({
         }}
       >
         <div style={{ marginLeft: '20px', justifyContent: 'left' }}>
+          {isStarted ? (
+            <Text
+              size={'xxs'}
+              color={'success'}
+              style={{ display: 'flex', alignItems: 'left' }}
+            >
+              Loan Started
+            </Text>
+          ) : (
+            <Text
+              size={'xxs'}
+              color={'warning'}
+              style={{ display: 'flex', alignItems: 'left' }}
+            >
+              Not Active
+            </Text>
+          )}
           <div
             style={{
               display: 'flex',
