@@ -1,10 +1,18 @@
-import { Button, Text } from 'components/ui';
+import { Button, Heading, Text } from 'components/ui';
 import * as React from 'react';
+import styled from 'styled-components';
 
 export default function Toggle({ selectedOption, setSelectedOption }) {
+  const HeadingWrapper = styled.div`
+    margin-top: 10px;
+    margin-bottom: 20px;
+  `;
   return (
     <>
-      <Text color="secondary">Manage</Text>
+      <HeadingWrapper>
+        <Heading size="sm"> Select lender or borrower options</Heading>
+      </HeadingWrapper>
+
       <Button
         color={'secondary'}
         fullwidth
@@ -18,7 +26,7 @@ export default function Toggle({ selectedOption, setSelectedOption }) {
         color={'secondary'}
         fullwidth
         variant={selectedOption === 'Borrower' ? 'translucent' : 'ghost'}
-        style={{ marginBottom: '20px' }}
+        style={{ marginBottom: '10px' }}
         onClick={() => setSelectedOption('Borrower')}
       >
         Borrower

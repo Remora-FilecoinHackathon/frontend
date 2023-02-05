@@ -85,15 +85,27 @@ export default function Home() {
   const BackgroundWrapper = styled.div`
     position: absolute;
     top: 0;
-    left: -100px;
+    left: -150px;
     z-index: -1;
     transition: left 4s ease-in-out;
+    animation: morph 4s ease-in-out infinite;
     @keyframes left {
       from {
         left: -150px;
       }
       to {
         left: -100px;
+      }
+    }
+    @keyframes morph {
+      0% {
+        transform: skew(1);
+      }
+      50% {
+        transform: skew(1.05);
+      }
+      100% {
+        transform: skew(1);
       }
     }
   `;
@@ -293,12 +305,10 @@ export default function Home() {
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation
                 </Text>
-                <LoaderWrapper>
-                  {isLoading ? <Loader color="secondary" /> : null}
-                </LoaderWrapper>
               </HeadingWrapper>
               <Button
                 fullwidth
+                loading={isLoading ? true : false}
                 variant={'outlined'}
                 onClick={handleDeployMockMinerActor}
                 style={{ marginBottom: '40px' }}
@@ -321,6 +331,7 @@ export default function Home() {
 
               <Button
                 fullwidth
+                loading={isLoading ? true : false}
                 // style={{
                 //   cursor: mockMinerActor ? 'pointer' : 'not-allowed',
                 //   opacity: mockMinerActor ? 1 : 0.5,
@@ -404,6 +415,7 @@ export default function Home() {
             </DealWrapper>
             <Button
               style={{ marginTop: '30px' }}
+              loading={isLoading ? true : false}
               fullwidth
               variant="filled"
               type="submit"

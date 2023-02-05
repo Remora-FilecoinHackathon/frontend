@@ -17,6 +17,9 @@ const cspReportOnly = process.env.CSP_REPORT_ONLY;
 const cspReportUri = process.env.CSP_REPORT_URI;
 
 export default {
+  images: {
+    disableStaticImages: true,
+  },
   basePath,
   eslint: {
     ignoreDuringBuilds: true,
@@ -31,16 +34,20 @@ export default {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+
   // WARNING: Vulnerability fix, don't remove until default Next.js image loader is patched
   // images: {
   //   loader: 'custom',
   // },
   webpack(config) {
     config.module.rules.push({
-      test: /\.(svg|png)$/,
+      test: /\.svg|png$/,
       use: [
         {
           loader: 'file-loader',
+          options: {
+            outputPath: 'static/img/',
+          },
         },
       ],
     });

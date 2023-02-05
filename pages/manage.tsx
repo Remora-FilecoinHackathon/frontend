@@ -1,4 +1,10 @@
-import { FormEventHandler, FormEvent, useEffect, useState } from 'react';
+import {
+  FormEventHandler,
+  FormEvent,
+  useEffect,
+  useState,
+  SetStateAction,
+} from 'react';
 import Layout from 'components/layout';
 import { mainContractAddress } from 'config/mainContractAddress';
 
@@ -6,9 +12,10 @@ import ConnectionError from 'components/connectionError';
 import Head from 'next/head';
 import styled from 'styled-components';
 
-import LendingManagerAbi from '../abi/LendingManager.abi.json';
-import { useContractSWR } from 'sdk/hooks/useContractSWR';
+import EscrowABI from '../abi/Escrow.abi.json';
+import LendingManagerABI from '../abi/LendingManager.abi.json';
 import {
+  useEscrowContractWeb3,
   useLendingManagerContractRPC,
   useLendingManagerContractWeb3,
   useModal,
@@ -22,6 +29,7 @@ import StackedBlock from 'components/stackedBlock';
 import { ethers } from 'ethers';
 import ActivePositionModule from 'components/modules/ActivePositionModule';
 import Toggle from 'components/toggle/Toggle';
+import AccordianUi from 'components/accordian-ui';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -29,13 +37,15 @@ const DealWrapper = styled.div`
 
 export default function Manage() {
   const [positions, setPositions] = useState();
-  const [isSelectedLoanKey, setisSelectedLoanKey] = useState('');
+  const [isSelectedEscrow, setisSelectedEscrow] = useState('');
   const [selectedOption, setSelectedOption] = useState('Lender');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const { account } = useSDK();
 
   const contractRPC = useLendingManagerContractRPC();
-  const contractWeb3 = useLendingManagerContractWeb3();
+  const contractLendingManager = useLendingManagerContractWeb3();
 
   const { openModal } = useModal(MODAL.connect);
 
@@ -47,15 +57,27 @@ export default function Manage() {
   const BackgroundWrapper = styled.div`
     position: absolute;
     top: 0;
-    left: -100px;
+    left: -150px;
     z-index: -1;
     transition: left 4s ease-in-out;
+    animation: morph 4s ease-in-out infinite;
     @keyframes left {
       from {
         left: -150px;
       }
       to {
         left: -100px;
+      }
+    }
+    @keyframes morph {
+      0% {
+        transform: skew(1);
+      }
+      50% {
+        transform: skew(1.05);
+      }
+      100% {
+        transform: skew(1);
       }
     }
   `;
@@ -68,9 +90,120 @@ export default function Manage() {
   `;
 
   // handling what contract is selected
-  const handleSelectedLoanKey = (id: string) => {
-    setisSelectedLoanKey(id);
-    console.log(isSelectedLoanKey);
+  const handleSelectedEscrow = (id: string) => {
+    setisSelectedEscrow(id);
+    console.log(isSelectedEscrow);
+  };
+
+  // START LOAN ***
+  const startLoan = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    if (account) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        console.log(`escrow address: ${isSelectedEscrow}`);
+        const contract = new ethers.Contract(
+          isSelectedEscrow,
+          EscrowABI,
+          signer,
+        );
+        setIsLoading(true);
+        await contract.startLoan();
+        setTimeout(() => {
+          setIsLoading(false);
+          console.log('Loan is started');
+        }, 30000);
+      } catch (error) {
+        console.error(`there is an Error: ${error}`);
+        setIsLoading(false);
+      }
+    } else {
+      openModal();
+    }
+  };
+
+  // WITHDRAW BEFORE LOAN START ***
+  const handleWithdraw = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    if (account) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          isSelectedEscrow,
+          EscrowABI,
+          signer,
+        );
+        contract.withdrawBeforLoanStarts();
+        setIsLoading(true);
+
+        setTimeout(() => {
+          setIsLoading(false);
+          console.log('Loan is closed');
+        }, 30000);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    } else {
+      openModal();
+    }
+  };
+
+  // REPAY ***
+  const handleRepay = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    console.log('repay button clicked');
+    if (account) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          isSelectedEscrow,
+          EscrowABI,
+          signer,
+        );
+        contract.repay();
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsLoading(false);
+          console.log('Loan repay');
+        }, 30000);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    } else {
+      openModal();
+    }
+  };
+
+  // CLOSE LOAN ***
+  const handleCloseLoan = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    if (account) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          isSelectedEscrow,
+          EscrowABI,
+          signer,
+        );
+        const tx = contract.closeLoan();
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsLoading(false);
+          console.log('Loan is closed');
+        }, 30000);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    } else {
+      openModal();
+    }
   };
 
   useEffect(() => {
@@ -78,19 +211,22 @@ export default function Manage() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
         mainContractAddress,
-        LendingManagerAbi,
+        LendingManagerABI,
         provider,
       );
 
       const loanKeysTotalNumber = (
         await contract.getLoanKeysLength()
       ).toNumber();
+      console.log('starting loop');
+
       if (loanKeysTotalNumber > 0) {
         const positionsArray = [];
         for (let i = 0; i < loanKeysTotalNumber; i++) {
           const loanKey = await contract.loanKeys([i]);
           const position = await contract.positions(loanKey._hex);
           const positionFormatted = {
+            id: [i],
             loanKey: loanKey,
             lender: position.lender,
             availableAmount: ethers.utils.formatEther(
@@ -100,8 +236,26 @@ export default function Manage() {
             interestRate: position.interestRate.toString() / 100,
             endDate: position.endTimestamp.toString(),
           };
+          console.log(`current loop on position: ${i}`);
+          if (account !== positionFormatted.lender) {
+            console.log(`negative match position at index ${i} with lender`);
+          }
           if (account === positionFormatted.lender) {
-            positionsArray.push(positionFormatted);
+            console.log(`positive match position at index ${i} with lender`);
+            const escrowContract = await contract.escrowContracts(
+              positionFormatted.loanKey,
+              positionFormatted.id,
+            );
+            if (escrowContract) {
+              console.log(`pushing index:{i} position to ui`);
+              positionFormatted.escrowAddress = escrowContract;
+              positionsArray.push(positionFormatted);
+            }
+            console.log(
+              escrowContract
+                ? `escrow contract:${escrowContract} at index ${i}`
+                : `could not find escrow contract`,
+            );
           }
         }
         setPositions(positionsArray);
@@ -109,111 +263,157 @@ export default function Manage() {
     })();
   }, [account]);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
-    event: FormEvent,
-  ) => {
-    event.preventDefault();
-    // close Loan
-    contractWeb3.closeLoan();
-  };
+  // handling fade in animations
+  useEffect(() => {
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 250);
+  }, []);
   return (
     <Layout>
       <Head>
         <title>Remora - Uncollateralized Lending</title>
       </Head>
+
       <>
-        <div style={{ textAlign: 'center' }}>
-          <Toggle
-            selectedOption={selectedOption}
-            setSelectedOption={setSelectedOption}
-          />
+        <div style={isLoading ? { opacity: '50%' } : { opacity: '100%' }}>
+          <div style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 1s' }}>
+            <div style={{ textAlign: 'center' }}>
+              <Toggle
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+              />
+              <HeadingWrapper>
+                <Heading size="sm"> Select Position to manage</Heading>
+              </HeadingWrapper>
+              {positions?.map((position) => (
+                <ActivePositionModule
+                  key={position.loanKey}
+                  loanKey={position.loanKey}
+                  liquidity={position.availableAmount}
+                  interestRate={position.interestRate}
+                  endDate={position.endDate}
+                  handleSelectedEscrow={handleSelectedEscrow}
+                  isSelectedEscrow={isSelectedEscrow}
+                  escrowAddress={position.escrowAddress}
+                />
+              ))}
+              <ConnectionError />
+              <HeadingWrapper>
+                <Heading size={'sm'}>Choose action</Heading>
+              </HeadingWrapper>
 
-          {positions?.map((position) => (
-            <ActivePositionModule
-              key={position.loanKey}
-              loanKey={position.loanKey}
-              liquidity={position.availableAmount}
-              interestRate={position.interestRate}
-              endDate={position.endDate}
-              handleSelectedLoankey={handleSelectedLoanKey}
-              isSelectedLoanKey={isSelectedLoanKey}
-            />
-          ))}
-          <ConnectionError />
-
-          {selectedOption === 'Lender' ? (
-            <>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                  marginBottom: '20px',
-                }}
-              >
-                <Button
-                  size={'md'}
-                  type="submit"
-                  style={{ marginLeft: '10px' }}
+              {selectedOption === 'Lender' ? (
+                <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-evenly',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    <Button
+                      size={'md'}
+                      loading={isLoading ? true : false}
+                      style={{ marginRight: '10px' }}
+                      onClick={handleRepay}
+                    >
+                      Start Loan
+                    </Button>
+                    <Button
+                      size={'md'}
+                      loading={isLoading ? true : false}
+                      style={{ marginLeft: '10px' }}
+                      onClick={handleWithdraw}
+                    >
+                      Withdraw
+                    </Button>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-evenly',
+                    }}
+                  >
+                    <Button
+                      size={'md'}
+                      loading={isLoading ? true : false}
+                      variant={'outlined'}
+                      style={{ marginRight: '10px' }}
+                      onClick={handleCloseLoan}
+                    >
+                      Close Loan
+                    </Button>
+                    <Button
+                      size={'md'}
+                      loading={isLoading ? true : false}
+                      variant={'outlined'}
+                      style={{ marginLeft: '10px' }}
+                      onClick={handleRepay}
+                    >
+                      Call Repay
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                  }}
                 >
-                  Withdraw
-                </Button>
-                <Button
-                  size={'md'}
-                  variant={'outlined'}
-                  type="submit"
-                  style={{ marginRight: '10px' }}
-                >
-                  Close Loan
-                </Button>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                }}
-              >
-                <Button
-                  size={'md'}
-                  type="submit"
-                  style={{ marginLeft: '10px' }}
-                >
-                  Call Repay
-                </Button>
-                <Button
-                  size={'md'}
-                  variant={'outlined'}
-                  type="submit"
-                  style={{ marginRight: '10px' }}
-                >
-                  Start Loan
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-              }}
-            >
-              <Button size={'md'} type="submit" style={{ marginLeft: '10px' }}>
-                Call Repay
-              </Button>
-              <Button
-                size={'md'}
-                variant={'outlined'}
-                type="submit"
-                style={{ marginRight: '10px' }}
-              >
-                Start Loan
-              </Button>
+                  <Button
+                    size={'md'}
+                    type="submit"
+                    style={{ marginLeft: '10px' }}
+                    loading={isLoading ? true : false}
+                    onClick={handleRepay}
+                  >
+                    Call Repay
+                  </Button>
+                  <Button
+                    size={'md'}
+                    variant={'outlined'}
+                    type="submit"
+                    style={{ marginRight: '10px' }}
+                    loading={isLoading ? true : false}
+                    onClick={startLoan}
+                  >
+                    Start Loan
+                  </Button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </>
+      <div
+        style={{
+          textAlign: 'center',
+          marginBottom: '10px',
+          marginTop: '80px',
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 1s',
+        }}
+      >
+        <Text
+          style={{
+            color: 'var(--white-color)',
+            marginBottom: '2px',
+          }}
+          size="xl"
+        >
+          FAQ
+        </Text>
+        <Text color="secondary" size="xs">
+          Frequently Asked Questions
+        </Text>
+      </div>
+      <AccordianUi />
+
       <BackgroundWrapper>
         <Eclipse />
       </BackgroundWrapper>
