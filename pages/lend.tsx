@@ -127,6 +127,7 @@ export default function Home() {
   ) => {
     event.preventDefault();
     var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+    console.log(priorityFee);
     console.log(`End Date: ${endDate._d.getTime()},
     Interest Value: ${parseFloat(
       interestValue * 100,
@@ -134,32 +135,23 @@ export default function Home() {
     if (account) {
       try {
         setIsLoading(true);
-        contractWeb3?.createLendingPosition(
+        let tx = await contractWeb3?.createLendingPosition(
           endDate._d.getTime(),
           parseFloat(interestValue) * 100,
           {
             value: ethers.utils.parseEther(amount),
-            maxPriorityFeePerGas: priorityFee.result,
+            // maxPriorityFeePerGas: priorityFee.result,
           },
         );
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await tx?.wait();
 
-        const contract = new ethers.Contract(
-          mainContractAddress,
-          LendingManagerABI,
-          provider,
-        );
-        await contract.on('LenderPosition', async function (duration) {
-          setIsLoading(false);
-        });
-      } catch (error) {
-        console.error(error);
         setIsLoading(false);
-      }
-      if (contractWeb3) {
         setAmount('');
         setInterestValue('');
         setEndDate(new Date());
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
       }
     } else {
       openModal();

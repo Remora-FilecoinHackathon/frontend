@@ -49,9 +49,7 @@ export default function Home() {
 
   const [repIsSuccess, setRepIsSuccess] = useState(false);
   const [amount, setAmount] = useState('');
-  // const [mockMinerActor, setMockMinerActor] = useState(
-  //   '0xB45F0Fe59cE1179b236eaBdf6b05Efd2613C5798'
-  // );
+  const [mockMinerActor, setMockMinerActor] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -182,11 +180,12 @@ export default function Home() {
         var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
         const MINER_ADDRESS: any = await contractWeb3?.ownerToMinerActor(
           account,
-          {
-            maxPriorityFeePerGas: priorityFee.result,
-          },
+          // {
+          //   maxPriorityFeePerGas: priorityFee.result,
+          // },
         );
         console.log(MINER_ADDRESS);
+        setMockMinerActor(MINER_ADDRESS);
         setIsLoading(false);
       } catch (error) {
         console.error(error);
@@ -247,10 +246,10 @@ export default function Home() {
         await contract.createBorrow(
           isSelectedLoanKey,
           ethers.utils.parseEther(amount),
-          '0x446DBaa702F3461585a308327aC50e4cCb4f3Bb8',
-          {
-            maxPriorityFeePerGas: priorityFee.result,
-          },
+          mockMinerActor,
+          // {
+          //   maxPriorityFeePerGas: priorityFee.result,
+          // },
         );
       } catch (error) {
         console.log(error);
@@ -300,7 +299,11 @@ export default function Home() {
               }
             >
               <HeadingWrapper>
-                {/* <p>{mockMinerActor}</p> */}
+                <p>
+                  {mockMinerActor == ''
+                    ? ''
+                    : `The Miner Actor address is: ${mockMinerActor}`}
+                </p>
                 <Heading size="sm">Step 1: Deploy Mock Contract</Heading>
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation
@@ -345,7 +348,11 @@ export default function Home() {
         </>
       ) : (
         <>
-          {/* <p>{mockMinerActor}</p> */}
+          <p>
+            {mockMinerActor == ''
+              ? ''
+              : `The Miner Actor address is: ${mockMinerActor}`}
+          </p>
           <form
             action=""
             method="post"
