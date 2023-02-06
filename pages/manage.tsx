@@ -1,4 +1,10 @@
-import { useEffect, useState } from 'react';
+import {
+  FormEventHandler,
+  FormEvent,
+  useEffect,
+  useState,
+  SetStateAction,
+} from 'react';
 import Layout from 'components/layout';
 import { mainContractAddress } from 'config/mainContractAddress';
 
@@ -8,18 +14,28 @@ import styled from 'styled-components';
 
 import EscrowABI from '../abi/Escrow.abi.json';
 import LendingManagerABI from '../abi/LendingManager.abi.json';
-import { useModal } from '../hooks';
+import {
+  useEscrowContractWeb3,
+  useLendingManagerContractRPC,
+  useLendingManagerContractWeb3,
+  useModal,
+} from '../hooks';
 import { useSDK } from 'sdk/hooks';
-
+import FormatToken from 'components/formatToken';
+import { formatBalance, stringToEther } from '../utils';
 import { MODAL } from '../providers';
 import { Button, Eclipse, Fil, Heading, Input, Text } from 'components/ui';
-
+import StackedBlock from 'components/stackedBlock';
 import { ethers } from 'ethers';
-
+import ActivePositionModule from 'components/modules/LenderPositionModule';
 import Toggle from 'components/toggle/Toggle';
 import AccordianUi from 'components/accordian-ui';
 import LenderPositionModule from 'components/modules/LenderPositionModule';
 import BorrowerPositionModule from 'components/modules/BorrowerPositionModule';
+
+const DealWrapper = styled.div`
+  margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
+`;
 
 export default function Manage() {
   const [loanPositions, setLoanPositions] = useState();
@@ -197,6 +213,7 @@ export default function Manage() {
   // SET LENDER POSITIONS
   useEffect(() => {
     (async () => {
+      try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
         mainContractAddress,
@@ -216,27 +233,30 @@ export default function Manage() {
       if (loanKeysTotalNumber > 0) {
         const positionsArray = [];
         for (let i = 0; i < loanKeysTotalNumber; i++) {
+            try {
           setIsLoading(true);
-          const loanKey = await contract.loanKeys([i]);
+              const loanKey = await contract.loanKeys(i);
           const position = await contract.positions(loanKey._hex);
           const positionFormatted = {
-            id: [i],
+                id: i,
             loanKey: loanKey,
             lender: position.lender,
             availableAmount: ethers.utils.formatEther(
               position.availableAmount.toString(),
             ),
-
             interestRate: position.interestRate.toString() / 100,
             endDate: position.endTimestamp.toString(),
           };
           console.log(`current loop on position: ${i}`);
           if (account !== positionFormatted.lender) {
-            console.log(`negative match position at index ${i} with lender`);
-          }
-          if (account === positionFormatted.lender) {
-            console.log(`positive match position at index ${i} with lender`);
-            try {
+                console.log(
+                  `negative match position at index ${i} with lender`,
+                );
+                setIsLoading(false);
+              } else {
+                console.log(
+                  `positive match position at index ${i} with lender`,
+                );
               const escrowAddress = await contract.escrowContracts(
                 positionFormatted.loanKey,
                 positionFormatted.id,
@@ -264,20 +284,22 @@ export default function Manage() {
                 isStarted: isStarted,
                 endDate: endDate.toString(),
               };
-
+                if (escrowContract) {
+                  setIsLoading(false);
               console.log(`pushing index:${i} position to ui`);
               positionsArray.push(escrowFormatted);
-            } catch (error) {
-              console.error(error);
+                }
               setIsLoading(false);
             }
-
+            } catch (e) {}
+          }
             setLoanPositions(positionsArray);
           }
-        }
+
         setIsLoading(false);
-      } else {
+      } catch (error) {
         setIsLoading(false);
+        console.log(error);
       }
     })();
   }, [account]);
@@ -286,30 +308,22 @@ export default function Manage() {
   useEffect(() => {
     (async () => {
       try {
-        if (isBorrower && !isLender) {
           setIsLoading(true);
-
           const provider = new ethers.providers.Web3Provider(window.ethereum);
           const contract = new ethers.Contract(
             mainContractAddress,
             LendingManagerABI,
             provider,
           );
-
-          const escrowAddress = await contract.borrowerPositions(account, 0);
-          if (escrowAddress === 0) {
+        var escrowsTotalNumber = await contract.getEscrowForBorrowers(account);
+        if (escrowsTotalNumber.toNumber() === 0) {
             setShowLoans(false);
             setShowBorrows(true);
-            setLoading(false);
-          }
-          if (escrowAddress) {
+        } else {
             const positionsArray = [];
-            for (let i = 0; i < 1; i++) {
-              const escrowAddress = await contract.borrowerPositions(
-                account,
-                i,
-              );
-              console.log(escrowAddress);
+          for (let i = 0; i < escrowsTotalNumber.toNumber(); i++) {
+            const escrowAddress = await contract.borrowerPositions(account, i);
+            if (escrowAddress) {
               const escrowContract = new ethers.Contract(
                 escrowAddress,
                 EscrowABI,
