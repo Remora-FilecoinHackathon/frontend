@@ -308,7 +308,7 @@ export default function Home() {
               >
                 {isLoading ? (
                   <Text color="warning">
-                    Please wait 1-2 min for reputation to be checked
+                    Please wait 1-2 min for action to be completed.
                   </Text>
                 ) : null}
                 <Heading size="sm">Step 2: Check Reputation</Heading>
