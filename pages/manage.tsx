@@ -233,7 +233,10 @@ export default function Manage() {
           } else {
             console.log(`positive match position at index ${i} with lender`);
             var escrowAddress;
-            var totalEscrowContracts = 1;
+            const totalEscrowContracts = 100; // this is just for PoC, we have to retrieve the real value from contract with getTotalEscrowContracts()
+            // const totalEscrowContracts = (
+            //   await contract.getTotalEscrowContracts()
+            // ).toNumber();
             for (let i = 0; i < totalEscrowContracts; i++) {
               try {
                 escrowAddress = await contract.escrowContracts(
@@ -242,7 +245,7 @@ export default function Manage() {
                 );
               } catch (e) {
                 console.log('AAAA');
-                continue;
+                break;
               }
               const escrowContract = new ethers.Contract(
                 escrowAddress,
