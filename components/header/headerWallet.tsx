@@ -5,7 +5,6 @@ import { useWeb3 } from '../../sdk/web3-react';
 
 import WalletButton from '../walletButton';
 import WalletConnect from '../walletConnect';
-import { Link } from '../ui';
 
 import { HeaderWalletChainStyle } from './headerWalletStyles';
 

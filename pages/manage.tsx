@@ -1,10 +1,4 @@
-import {
-  FormEventHandler,
-  FormEvent,
-  useEffect,
-  useState,
-  SetStateAction,
-} from 'react';
+import { useEffect, useState } from 'react';
 import Layout from 'components/layout';
 import { mainContractAddress } from 'config/mainContractAddress';
 
@@ -14,20 +8,13 @@ import styled from 'styled-components';
 
 import EscrowABI from '../abi/Escrow.abi.json';
 import LendingManagerABI from '../abi/LendingManager.abi.json';
-import {
-  useEscrowContractWeb3,
-  useLendingManagerContractRPC,
-  useLendingManagerContractWeb3,
-  useModal,
-} from '../hooks';
+import { useModal } from '../hooks';
 import { useSDK } from 'sdk/hooks';
-import FormatToken from 'components/formatToken';
-import { formatBalance, stringToEther } from '../utils';
+
 import { MODAL } from '../providers';
 import { Button, Eclipse, Fil, Heading, Input, Text } from 'components/ui';
-import StackedBlock from 'components/stackedBlock';
 import { ethers } from 'ethers';
-import ActivePositionModule from 'components/modules/LenderPositionModule';
+
 import Toggle from 'components/toggle/Toggle';
 import AccordianUi from 'components/accordian-ui';
 import LenderPositionModule from 'components/modules/LenderPositionModule';
@@ -84,14 +71,6 @@ export default function Manage() {
         transform: skew(1);
       }
     }
-  `;
-
-  const DecoratorLabelStyle = styled.span`
-    display: inline-block;
-    font-size: 30px;
-    line-height: 39px;
-    font-weight: 600;
-    margin-left: 15px;
   `;
 
   // handling what contract is selected
