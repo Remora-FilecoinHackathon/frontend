@@ -1,0 +1,10 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/api/rpc": "pages/api/rpc.js",
+  "/borrow": "pages/borrow.js",
+  "/": "pages/index.js",
+  "/lend": "pages/lend.js",
+  "/manage": "pages/manage.js",
+  "/_document": "pages/_document.js"
+}
