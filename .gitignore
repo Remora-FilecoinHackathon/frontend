@@ -11,6 +11,10 @@
 # generated
 /generated
 
+# next.js
+/.next/
+/out/
+
 # production
 /build
 
