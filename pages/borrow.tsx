@@ -243,7 +243,9 @@ export default function Home() {
         // Mock Miner Actor: ${'0xB45F0Fe59cE1179b236eaBdf6b05Efd2613C5798'}`);
         var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
 
-        await contract.createBorrow(
+        setIsLoading(true);
+
+        let tx = await contract.createBorrow(
           isSelectedLoanKey,
           ethers.utils.parseEther(amount),
           mockMinerActor,
@@ -251,7 +253,10 @@ export default function Home() {
           //   maxPriorityFeePerGas: priorityFee.result,
           // },
         );
+        await tx.wait();
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.log(error);
       }
     }

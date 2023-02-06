@@ -41,6 +41,8 @@ export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [newLendingPositionCreated, setNewLendingPositionCreated] =
+    useState(false);
 
   const { account } = useSDK();
 
@@ -135,6 +137,7 @@ export default function Home() {
     if (account) {
       try {
         setIsLoading(true);
+        setNewLendingPositionCreated(false);
         let tx = await contractWeb3?.createLendingPosition(
           endDate._d.getTime(),
           parseFloat(interestValue) * 100,
@@ -149,6 +152,7 @@ export default function Home() {
         setAmount('');
         setInterestValue('');
         setEndDate(new Date());
+        setNewLendingPositionCreated(true);
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -176,8 +180,11 @@ export default function Home() {
       >
         <Heading size="sm">Lend Your Fil</Heading>
         <Text color="secondary" size="xs">
-          Create a new contract.
+          Create a new Lending position.
         </Text>
+        <p>
+          {newLendingPositionCreated ? 'New lending position created!' : ''}
+        </p>
       </div>
       <LoaderWrapper>
         {isLoading ? <Loader color={'secondary'} /> : null}
