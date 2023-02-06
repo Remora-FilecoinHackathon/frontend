@@ -200,21 +200,22 @@ export default function Home() {
     event.preventDefault();
     if (account) {
       try {
-        // const provider = new ethers.providers.Web3Provider(window.ethereum);
-        // const signer = provider.getSigner();
-        // const contract = new ethers.Contract(
-        //   mainContractAddress,
-        //   LendingManagerABI,
-        //   signer,
-        // );
-        // const tx = await contract.checkReputation(mockMinerActor);
-        // setIsLoading(true);
-        // await tx.wait();
-        // contract.on('ReputationReceived', async function (id, response, miner) {
-        //   console.log('**** REPUTATION EVENT RECEIVED ****');
-        //   console.log(id, response, miner);
-        //   console.log(response);
-        setRepIsSuccess(true);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          signer,
+        );
+        const tx = await contract.checkReputation(mockMinerActor);
+        setIsLoading(true);
+        await tx.wait();
+        contract.on('ReputationReceived', async function (id, response, miner) {
+          console.log('**** REPUTATION EVENT RECEIVED ****');
+          console.log(id, response, miner);
+          console.log(response);
+          setRepIsSuccess(true);
+        });
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -238,9 +239,6 @@ export default function Home() {
           LendingManagerABI,
           signer,
         );
-        //   console.log(`Loan Key:${isSelectedLoanKey},
-        // Amount: ${amount},
-        // Mock Miner Actor: ${'0xB45F0Fe59cE1179b236eaBdf6b05Efd2613C5798'}`);
         var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
 
         setIsLoading(true);
@@ -309,6 +307,9 @@ export default function Home() {
                     ? ''
                     : `The Miner Actor address is: ${mockMinerActor}`}
                 </p>
+                <Text color="error" size="xxs">
+                  ** Lender wallet and Borrower wallet cannot be the same **
+                </Text>
                 <Heading size="sm">Step 1: Deploy Mock Contract</Heading>
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation

@@ -5,7 +5,7 @@ import Luca from '../teamImages/Luca.png';
 import Jajablinky from '../teamImages/Jajablinky.png';
 import Image from 'next/image';
 import LanguageIcon from '@mui/icons-material/Language';
-import { Heading, Text } from 'components/ui';
+import { Heading, Link, Text } from 'components/ui';
 
 import { useEffect, useState } from 'react';
 
@@ -48,7 +48,9 @@ function Team(props: any) {
             >
               Solidity Engineer
             </Text>
-            <LanguageIcon fontSize="small" />
+            <Link href="https://linktr.ee/frankcc">
+              <LanguageIcon fontSize="small" />
+            </Link>
           </div>
           <div>
             <Image src={ZeroXThresh} alt="0xThresh" height="128" width="128" />
@@ -62,7 +64,9 @@ function Team(props: any) {
             >
               Backend Developer
             </Text>
-            <LanguageIcon fontSize="small" />
+            <Link href="https://twitter.com/0xthresh">
+              <LanguageIcon fontSize="small" />
+            </Link>
           </div>
           <div>
             <Image src={Kalpita} alt="Kalpita" height="128" width="128" />
@@ -75,7 +79,9 @@ function Team(props: any) {
             >
               Solidity Engineer
             </Text>
-            <LanguageIcon fontSize="small" />
+            <Link href="https://linktr.ee/kalpita_mandal">
+              <LanguageIcon fontSize="small" />
+            </Link>
           </div>
           <div>
             <Image src={Luca} alt="Luca" height="128" width="128" />
@@ -88,7 +94,9 @@ function Team(props: any) {
             >
               Solidity Engineer
             </Text>
-            <LanguageIcon fontSize="small" />
+            <Link href="https://linktr.ee/lucadidomenico">
+              <LanguageIcon fontSize="small" />
+            </Link>
           </div>
           <div>
             <Image src={Jajablinky} alt="Jajablinky" height="128" width="128" />
@@ -101,7 +109,9 @@ function Team(props: any) {
             >
               Frontend Developer
             </Text>
-            <LanguageIcon fontSize="small" />
+            <Link href="http://twitter.com/jajablinky">
+              <LanguageIcon fontSize="small" />
+            </Link>
           </div>
         </div>
       </TeamStyles>
