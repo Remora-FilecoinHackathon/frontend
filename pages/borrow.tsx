@@ -307,7 +307,7 @@ export default function Home() {
               // }}
               >
                 {isLoading ? (
-                  <Text color="warning">
+                  <Text color="warning" style={{ marginBottom: '40px' }}>
                     Please wait 1-2 min for action to be completed.
                   </Text>
                 ) : null}
