@@ -1,10 +1,7 @@
 import Layout from 'components/layout';
 
 import axios from 'axios';
-import {
-  useLendingManagerContractWeb3,
-  useLendingManagerContractRPC,
-} from '../hooks';
+import { useLendingManagerContractWeb3 } from '../hooks';
 
 import LendingManagerABI from '../abi/LendingManager.abi.json';
 import { useSDK } from 'sdk/hooks';
@@ -19,15 +16,7 @@ import {
   FormEvent,
 } from 'react';
 
-import {
-  Heading,
-  Text,
-  Button,
-  Eclipse,
-  Input,
-  Fil,
-  Loader,
-} from '../components/ui';
+import { Heading, Text, Button, Eclipse, Input, Fil } from '../components/ui';
 
 import { useModal } from '../hooks';
 
@@ -38,7 +27,6 @@ import StackedBlock from 'components/stackedBlock';
 import AccordianUi from 'components/accordian-ui';
 import { ethers } from 'ethers';
 import { mainContractAddress } from 'config/mainContractAddress';
-import { isResSent } from 'next/dist/shared/lib/utils';
 
 const DealWrapper = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
@@ -55,8 +43,6 @@ export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
   const [positions, setPositions] = useState();
   const [isSelectedLoanKey, setIsSelectedLoanKey] = useState('');
-
-  const [submit, setSubmit] = useState();
 
   const { openModal } = useModal(MODAL.connect);
 
@@ -172,17 +158,9 @@ export default function Home() {
         let tx = await contractWeb3?.deployMockMinerActor();
         setIsLoading(true);
         await tx?.wait();
-        // contract.on('MinerMockAPIDeployed', (address, msg) => {
-        //   console.log(`deployed Mock Miner: ${address}`);
-        //   setMockMinerActor(address);
-        //   setIsLoading(false);
-        // });
-        var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+
         const MINER_ADDRESS: any = await contractWeb3?.ownerToMinerActor(
           account,
-          // {
-          //   maxPriorityFeePerGas: priorityFee.result,
-          // },
         );
         console.log(MINER_ADDRESS);
         setMockMinerActor(MINER_ADDRESS);
@@ -216,6 +194,7 @@ export default function Home() {
           console.log(response);
           setRepIsSuccess(true);
         });
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -239,7 +218,6 @@ export default function Home() {
           LendingManagerABI,
           signer,
         );
-        var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
 
         setIsLoading(true);
 
@@ -247,9 +225,6 @@ export default function Home() {
           isSelectedLoanKey,
           ethers.utils.parseEther(amount),
           mockMinerActor,
-          // {
-          //   maxPriorityFeePerGas: priorityFee.result,
-          // },
         );
         await tx.wait();
         setIsLoading(false);
