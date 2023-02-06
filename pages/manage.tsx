@@ -69,8 +69,6 @@ export default function Manage() {
       }
     }
   `;
-<<<<<<< Updated upstream
-=======
 
   const DecoratorLabelStyle = styled.span`
     display: inline-block;
@@ -79,7 +77,6 @@ export default function Manage() {
     font-weight: 600;
     margin-left: 15px;
   `;
->>>>>>> Stashed changes
 
   // handling what contract is selected
   const handleSelectedEscrow = (id: string) => {
@@ -220,7 +217,6 @@ export default function Manage() {
         if (loanKeysTotalNumber > 0) {
           const positionsArray = [];
           for (let i = 0; i < loanKeysTotalNumber; i++) {
-<<<<<<< Updated upstream
             setIsLoading(true);
             const loanKey = await contract.loanKeys([i]);
             const position = await contract.positions(loanKey._hex);
@@ -242,40 +238,10 @@ export default function Manage() {
             if (account === positionFormatted.lender) {
               console.log(`positive match position at index ${i} with lender`);
               try {
-=======
-            try {
-              setIsLoading(true);
-              const loanKey = await contract.loanKeys(i);
-              const position = await contract.positions(loanKey._hex);
-              const positionFormatted = {
-                id: i,
-                loanKey: loanKey,
-                lender: position.lender,
-                availableAmount: ethers.utils.formatEther(
-                  position.availableAmount.toString(),
-                ),
-                interestRate: position.interestRate.toString() / 100,
-                endDate: position.endTimestamp.toString(),
-              };
-              console.log(`current loop on position: ${i}`);
-              if (account !== positionFormatted.lender) {
-                console.log(
-                  `negative match position at index ${i} with lender`,
-                );
-                setIsLoading(false);
-              } else {
-                console.log(
-                  `positive match position at index ${i} with lender`,
-                );
->>>>>>> Stashed changes
                 const escrowAddress = await contract.escrowContracts(
                   positionFormatted.loanKey,
                   positionFormatted.id,
                 );
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
                 const escrowContract = new ethers.Contract(
                   escrowAddress,
                   EscrowABI,
@@ -299,7 +265,6 @@ export default function Manage() {
                   isStarted: isStarted,
                   endDate: endDate.toString(),
                 };
-<<<<<<< Updated upstream
 
                 console.log(`pushing index:${i} position to ui`);
                 positionsArray.push(escrowFormatted);
@@ -310,29 +275,11 @@ export default function Manage() {
 
               setLoanPositions(positionsArray);
             }
-=======
-                if (escrowContract) {
-                  setIsLoading(false);
-                  console.log(`pushing index:${i} position to ui`);
-                  positionsArray.push(escrowFormatted);
-                }
-                setIsLoading(false);
-              }
-            } catch (e) {}
->>>>>>> Stashed changes
           }
           setIsLoading(false);
         } else {
           setIsLoading(false);
         }
-<<<<<<< Updated upstream
-=======
-
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        console.log(error);
->>>>>>> Stashed changes
       }
     })();
   }, [account]);
@@ -341,7 +288,6 @@ export default function Manage() {
   useEffect(() => {
     (async () => {
       try {
-<<<<<<< Updated upstream
         if (isBorrower && !isLender) {
           setIsLoading(true);
 
@@ -366,24 +312,6 @@ export default function Manage() {
                 i,
               );
               console.log(escrowAddress);
-=======
-        setIsLoading(true);
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const contract = new ethers.Contract(
-          mainContractAddress,
-          LendingManagerABI,
-          provider,
-        );
-        var escrowsTotalNumber = await contract.getEscrowForBorrowers(account);
-        if (escrowsTotalNumber.toNumber() === 0) {
-          setShowLoans(false);
-          setShowBorrows(true);
-        } else {
-          const positionsArray = [];
-          for (let i = 0; i < escrowsTotalNumber.toNumber(); i++) {
-            const escrowAddress = await contract.borrowerPositions(account, i);
-            if (escrowAddress) {
->>>>>>> Stashed changes
               const escrowContract = new ethers.Contract(
                 escrowAddress,
                 EscrowABI,

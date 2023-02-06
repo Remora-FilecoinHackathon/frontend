@@ -160,20 +160,14 @@ export default function Home() {
         let tx = await contractWeb3?.deployMockMinerActor();
         setIsLoading(true);
         await tx?.wait();
-<<<<<<< Updated upstream
 
-        const MINER_ADDRESS: any = await contractWeb3?.ownerToMinerActor(
-=======
         // contract.on('MinerMockAPIDeployed', (address, msg) => {
         //   console.log(`deployed Mock Miner: ${address}`);
         //   setMockMinerActor(address);
         //   setIsLoading(false);
         // });
         var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
-        MINER_ADDRESS = await contractWeb3?.ownerToMinerActor(
->>>>>>> Stashed changes
-          account,
-        );
+        MINER_ADDRESS = await contractWeb3?.ownerToMinerActor(account);
         console.log(MINER_ADDRESS);
         setMockMinerActor(MINER_ADDRESS);
         setIsLoading(false);
@@ -249,14 +243,10 @@ export default function Home() {
         let tx = await contract.createBorrow(
           isSelectedLoanKey,
           ethers.utils.parseEther(amount),
-<<<<<<< Updated upstream
-          mockMinerActor,
-=======
           MINER_ADDRESS,
           // {
           //   maxPriorityFeePerGas: priorityFee.result,
           // },
->>>>>>> Stashed changes
         );
         await tx.wait();
         setIsLoading(false);
