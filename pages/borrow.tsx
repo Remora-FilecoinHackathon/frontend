@@ -277,7 +277,7 @@ export default function Home() {
               }
             >
               <HeadingWrapper>
-                <Text style={{ color: 'var(--color-white)' }}>
+                <Text size="xxs" style={{ color: 'var(--color-white)' }}>
                   {mockMinerActor == ''
                     ? ''
                     : `The Miner Actor address is: ${mockMinerActor}`}
