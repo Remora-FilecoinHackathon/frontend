@@ -46,6 +46,8 @@ export default function Home() {
 
   const { openModal } = useModal(MODAL.connect);
 
+  var MINER_ADDRESS: any = '';
+
   /* Wrapper Styles */
   const DecoratorLabelStyle = styled.span`
     display: inline-block;
@@ -158,8 +160,18 @@ export default function Home() {
         let tx = await contractWeb3?.deployMockMinerActor();
         setIsLoading(true);
         await tx?.wait();
+<<<<<<< Updated upstream
 
         const MINER_ADDRESS: any = await contractWeb3?.ownerToMinerActor(
+=======
+        // contract.on('MinerMockAPIDeployed', (address, msg) => {
+        //   console.log(`deployed Mock Miner: ${address}`);
+        //   setMockMinerActor(address);
+        //   setIsLoading(false);
+        // });
+        var priorityFee = await callRpc('eth_maxPriorityFeePerGas');
+        MINER_ADDRESS = await contractWeb3?.ownerToMinerActor(
+>>>>>>> Stashed changes
           account,
         );
         console.log(MINER_ADDRESS);
@@ -221,10 +233,30 @@ export default function Home() {
 
         setIsLoading(true);
 
+        MINER_ADDRESS = await contractWeb3?.ownerToMinerActor(
+          account,
+          // {
+          //   maxPriorityFeePerGas: priorityFee.result,
+          // },
+        );
+
+        console.log(
+          isSelectedLoanKey,
+          ethers.utils.parseEther(amount),
+          MINER_ADDRESS,
+        );
+
         let tx = await contract.createBorrow(
           isSelectedLoanKey,
           ethers.utils.parseEther(amount),
+<<<<<<< Updated upstream
           mockMinerActor,
+=======
+          MINER_ADDRESS,
+          // {
+          //   maxPriorityFeePerGas: priorityFee.result,
+          // },
+>>>>>>> Stashed changes
         );
         await tx.wait();
         setIsLoading(false);
