@@ -23,7 +23,8 @@ const WalletButton: FC<ButtonProps> = (props) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const balance = await provider.getBalance(address);
     const balanceInEth = ethers.utils.formatEther(balance);
-    setBalance(balanceInEth);
+    const roundedBalance = Number(balanceInEth).toFixed(2);
+    setBalance(roundedBalance);
   }
 
   useEffect(() => {
