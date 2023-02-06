@@ -193,8 +193,8 @@ export default function Home() {
           console.log(id, response, miner);
           console.log(response);
           setRepIsSuccess(true);
+          setIsLoading(false);
         });
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -277,11 +277,11 @@ export default function Home() {
               }
             >
               <HeadingWrapper>
-                <p>
+                <Text style={{ color: 'var(--color-white)' }}>
                   {mockMinerActor == ''
                     ? ''
                     : `The Miner Actor address is: ${mockMinerActor}`}
-                </p>
+                </Text>
                 <Text color="error" size="xxs">
                   ** Lender wallet and Borrower wallet cannot be the same **
                 </Text>
@@ -306,6 +306,11 @@ export default function Home() {
               //   opacity: mockMinerActor ? 1 : 0.5,
               // }}
               >
+                {isLoading ? (
+                  <Text color="warning">
+                    Please wait 1-2 min for reputation to be checked
+                  </Text>
+                ) : null}
                 <Heading size="sm">Step 2: Check Reputation</Heading>
                 <Text color="secondary" size="xs">
                   Check your reputation and you will be able to select which

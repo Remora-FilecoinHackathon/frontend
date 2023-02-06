@@ -1,3 +1,6 @@
+import Fade from 'react-reveal/Fade';
+import Slide from 'react-reveal/Slide';
+
 import Head from 'next/head';
 
 import Hero from 'components/hero';
@@ -11,7 +14,11 @@ export default function Home() {
         <title>Remora - Uncollateralized Lending</title>
       </Head>
       <Hero />
-      <Team />
+      <Fade>
+        <Slide left>
+          <Team />
+        </Slide>
+      </Fade>
     </LayoutLandingPage>
   );
 }
