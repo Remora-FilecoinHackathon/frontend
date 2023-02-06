@@ -304,9 +304,9 @@ export default function Home() {
                     ? ''
                     : `The Miner Actor address is: ${mockMinerActor}`}
                 </Text>
-                <Text color="error" size="xxs">
+                {/* <Text color="error" size="xxs">
                   ** Lender wallet and Borrower wallet cannot be the same **
-                </Text>
+                </Text> */}
                 <Heading size="sm">Step 1: Deploy Mock Contract</Heading>
                 <Text color="secondary" size="xs">
                   Deploy before checking reputation

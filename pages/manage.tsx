@@ -213,7 +213,6 @@ export default function Manage() {
   // SET LENDER POSITIONS
   useEffect(() => {
     (async () => {
-      try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
         mainContractAddress,
@@ -233,12 +232,11 @@ export default function Manage() {
       if (loanKeysTotalNumber > 0) {
         const positionsArray = [];
         for (let i = 0; i < loanKeysTotalNumber; i++) {
-            try {
           setIsLoading(true);
-              const loanKey = await contract.loanKeys(i);
+          const loanKey = await contract.loanKeys(i);
           const position = await contract.positions(loanKey._hex);
           const positionFormatted = {
-                id: i,
+            id: i,
             loanKey: loanKey,
             lender: position.lender,
             availableAmount: ethers.utils.formatEther(
@@ -249,18 +247,24 @@ export default function Manage() {
           };
           console.log(`current loop on position: ${i}`);
           if (account !== positionFormatted.lender) {
-                console.log(
-                  `negative match position at index ${i} with lender`,
+            console.log(account);
+            console.log(positionFormatted.lender);
+            console.log(`negative match position at index ${i} with lender`);
+            setIsLoading(false);
+          } else {
+            console.log(`positive match position at index ${i} with lender`);
+            var escrowAddress;
+            var totalEscrowContracts = 1;
+            for (let i = 0; i < totalEscrowContracts; i++) {
+              try {
+                escrowAddress = await contract.escrowContracts(
+                  positionFormatted.loanKey,
+                  i,
                 );
-                setIsLoading(false);
-              } else {
-                console.log(
-                  `positive match position at index ${i} with lender`,
-                );
-              const escrowAddress = await contract.escrowContracts(
-                positionFormatted.loanKey,
-                positionFormatted.id,
-              );
+              } catch (e) {
+                console.log('AAAA');
+                continue;
+              }
               const escrowContract = new ethers.Contract(
                 escrowAddress,
                 EscrowABI,
@@ -284,23 +288,15 @@ export default function Manage() {
                 isStarted: isStarted,
                 endDate: endDate.toString(),
               };
-                if (escrowContract) {
-                  setIsLoading(false);
               console.log(`pushing index:${i} position to ui`);
               positionsArray.push(escrowFormatted);
-                }
-              setIsLoading(false);
             }
-            } catch (e) {}
+            setIsLoading(false);
           }
-            setLoanPositions(positionsArray);
-          }
-
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        console.log(error);
+        }
+        setLoanPositions(positionsArray);
       }
+      setIsLoading(false);
     })();
   }, [account]);
 
@@ -308,19 +304,19 @@ export default function Manage() {
   useEffect(() => {
     (async () => {
       try {
-          setIsLoading(true);
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          const contract = new ethers.Contract(
-            mainContractAddress,
-            LendingManagerABI,
-            provider,
-          );
+        setIsLoading(true);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(
+          mainContractAddress,
+          LendingManagerABI,
+          provider,
+        );
         var escrowsTotalNumber = await contract.getEscrowForBorrowers(account);
         if (escrowsTotalNumber.toNumber() === 0) {
-            setShowLoans(false);
-            setShowBorrows(true);
+          setShowLoans(false);
+          setShowBorrows(true);
         } else {
-            const positionsArray = [];
+          const positionsArray = [];
           for (let i = 0; i < escrowsTotalNumber.toNumber(); i++) {
             const escrowAddress = await contract.borrowerPositions(account, i);
             if (escrowAddress) {
