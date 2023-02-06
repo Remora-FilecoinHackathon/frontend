@@ -72,7 +72,7 @@ const LenderPositionModule = ({
             <Fil style={{ marginLeft: '12px' }} />
           </div>
           <p style={{ display: 'flex', alignItems: 'left' }}>
-            Available Liquidity
+            Amount to repay (Loan + Interest)
           </p>
         </div>
         <div style={{ marginRight: '20px', justifyContent: 'right' }}>
